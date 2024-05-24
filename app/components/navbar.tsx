@@ -8,7 +8,7 @@ const Navbar = () => {
         <Flex as="nav" className="navbar" borderRadius={5} border={"1px solid white"}>
             <SubmitFormModal isOpen={isOpen} onClose={onClose} />
             <Text fontSize="xl" fontWeight="bold">
-                The Book of Stamp
+                Book of Stamp
             </Text>
             <Button className="navbar-button" onClick={onOpen}>
                 Submit Art
