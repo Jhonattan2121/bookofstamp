@@ -1,5 +1,5 @@
 'use client'
-import { Box, Button, Center, Image, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Center, HStack, Image, Text, useDisclosure } from '@chakra-ui/react';
 import StampGrid from './components/StampGrid';
 import SubmitFormModal from './components/submitFormModal';
 import { stamp_ids } from './utils/stampIDs';
@@ -11,7 +11,13 @@ const HomePage = () => {
     <Box p={5}>
       <Center>
         <SubmitFormModal isOpen={isOpen} onClose={onClose} />
-        <Image mb={10} boxSize="200px" src="walletIcon.webp" alt="Logo" className="navbar-logo" />
+        <HStack>
+          <Image mb={10} boxSize="200px" src="walletIcon.webp" alt="Logo" className="navbar-logo" />
+          <Text fontSize="6xl" fontWeight="bold" color="white">
+            Book of Stamp
+          </Text>
+        </HStack>
+
       </Center>
 
       <StampGrid stampIds={stamp_ids} />

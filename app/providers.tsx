@@ -5,7 +5,11 @@ const chakraTheme = extendTheme({
         global: {
             body: {
                 bg: "black",
-                backgroundImage: "url('https://media.giphy.com/media/u7uwliwM86GBi/giphy.gif')",
+                backgroundImage: "url('https://i.pinimg.com/originals/c8/0a/e6/c80ae609854f3686008e15491929e070.gif')",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backdropFilter: "blur(5px)"
+
             },
         },
     },

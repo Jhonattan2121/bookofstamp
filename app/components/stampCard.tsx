@@ -47,8 +47,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                     </HStack>
                 </CardHeader>
                 <Box border={"0.6px solid grey"} borderRadius="10px" p={10} >
-                    <CardBody >
-                        <Center>
+                    <CardBody
+                        bg={"transparent"}
+                    >
+                        <Center >
                             <Image
                                 src={stampInfo.stamp_url}
                                 alt={'stamp'}
