@@ -5,6 +5,7 @@ const chakraTheme = extendTheme({
         global: {
             body: {
                 bg: "black",
+                backgroundImage: "url('https://media.giphy.com/media/u7uwliwM86GBi/giphy.gif')",
             },
         },
     },

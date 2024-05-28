@@ -1,12 +1,10 @@
 'use client'
 
-import { Flex, Spacer, Text } from '@chakra-ui/react';
-
+import { Flex, Menu, MenuButton, MenuItem, MenuList, Spacer, Text } from '@chakra-ui/react';
 const Navbar = () => {
 
     return (
         <>
-
             <Flex
                 as="nav"
                 bg="black"
@@ -22,8 +20,26 @@ const Navbar = () => {
                     Book of Stamp
                 </Text>
                 <Spacer />
+                <Menu>
+                    <MenuButton>
+                        <Text color={'white'} fontSize="lg" fontWeight="bold">
+                            Menu
+                        </Text>
 
-            </Flex>
+                    </MenuButton>
+                    <MenuList
+                        bg={"black"}>
+                        <MenuItem
+                            bg={"black"}>
+                            Curse on X</MenuItem>
+                        <MenuItem bg={"black"}>Punch EV</MenuItem>
+                        <MenuItem bg={"black"}>Buy a Dao</MenuItem>
+                        <MenuItem bg={"black"}>Do a KickFlip</MenuItem>
+                        <MenuItem bg={"black"}>Fart</MenuItem >
+                    </MenuList >
+
+                </Menu >
+            </Flex >
         </>
     )
 }

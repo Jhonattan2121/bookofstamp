@@ -8,26 +8,24 @@ const HomePage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box m={20} p={5}>
+    <Box p={5}>
       <Center>
         <SubmitFormModal isOpen={isOpen} onClose={onClose} />
-
-        <Image mb={40} boxSize="200px" src="walletIcon.webp" alt="Logo" className="navbar-logo" />
+        <Image mb={10} boxSize="200px" src="walletIcon.webp" alt="Logo" className="navbar-logo" />
       </Center>
 
       <StampGrid stampIds={stamp_ids} />
       <Center
-        m={10}
-
+        m={5}
       >
-
         <Button
-          m={10}
           onClick={onOpen}
-          colorScheme='green'
-          _hover={{ bg: "green", transform: "scale(1.05)" }}
-          mr={4}
-          fontSize={'72px'}
+          variant={'outline'}
+          colorScheme='yellow'
+          _hover={{ transform: "scale(1.05)" }}
+          w={'50%'}
+          h={'auto'}
+          fontSize={'48px'}
         >
           Submit Art
         </Button>
