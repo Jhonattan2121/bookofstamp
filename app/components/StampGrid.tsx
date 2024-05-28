@@ -1,5 +1,5 @@
 'use client'
-import { Box, Center, Image, Text, VStack } from '@chakra-ui/react';
+import { Center, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
@@ -36,18 +36,16 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
 
     if (loading) {
         return (
-            <Box minH={"100%"}>
-                <Center >
-                    <VStack>
-                        <Image
-                            src="https://www.gifcen.com/wp-content/uploads/2022/03/pepe-the-frog-gif-1.gif"
-                            alt=""
-                            boxSize="200px"
-                        />
-                        <Text fontSize="48px">Loading...</Text>
-                    </VStack>
-                </Center>
-            </Box>
+            <Center mt={10}>
+                <VStack>
+                    <Image
+                        src="https://www.gifcen.com/wp-content/uploads/2022/03/pepe-the-frog-gif-1.gif"
+                        alt=""
+                        boxSize="200px"
+                    />
+                    <Text fontSize="48px">Loading...</Text>
+                </VStack>
+            </Center>
         );
     }
 
