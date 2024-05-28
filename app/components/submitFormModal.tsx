@@ -27,7 +27,8 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
         console.log(key, e.target.value);
     }
     return (
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <Modal isCentered
+            isOpen={isOpen} onClose={onClose} >
             <ModalOverlay />
             <ModalContent
                 bg="black"
@@ -66,7 +67,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             </InputGroup>
                         </FormControl>
                         <FormControl>
-                            <FormLabel color="white">Your Telegram Username</FormLabel>
+                            <FormLabel color="white">Telegram Username</FormLabel>
                             <InputGroup>
                                 <InputLeftElement pointerEvents="none" children="@" color="gray.400" />
                                 <Input
