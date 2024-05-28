@@ -13,8 +13,8 @@ import {
     Text,
     VStack,
 } from '@chakra-ui/react';
+import { FaBitcoin } from "react-icons/fa";
 import { StampInfo } from '../utils/getStampsInfo';
-
 interface Holder {
     address: string;
     quantity: number;
@@ -39,6 +39,12 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                 p={2}
                 minW="300px"
                 borderRadius="10px"
+                _hover={{
+                    boxShadow: "0 0 5px 3px grey",
+                    transform: "scale(1.0002)",
+                    transition: "transform 0.2s"
+                }}
+
             >
                 <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                     <HStack justify={"center"}>
@@ -57,7 +63,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                                 boxSize="240px"
                                 borderRadius="10px"
                                 borderWidth="2px"
-                                borderColor="yellow.400"
+                                borderColor="yellow"
                             />
                         </Center>
                     </CardBody>
@@ -66,12 +72,16 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                             <VStack>
 
                                 <Box borderWidth="1px" borderRadius="10px" p={3} >
-                                    <Text color={"white"} fontSize="md"><strong>CPID:</strong> {stampInfo.cpid}</Text>
-                                    <Text color={"white"} fontSize="md"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
-                                    <Text color={"white"} fontSize="md"><strong>Supply:</strong> {stampInfo.supply}</Text>
+                                    <Text color={"grey"} fontSize="md"><strong>CPID:</strong> {stampInfo.cpid}</Text>
+                                    <Text color={"grey"} fontSize="md"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
+                                    <Text color={"grey"} fontSize="md"><strong>Supply:</strong> {stampInfo.supply}</Text>
                                 </Box>
                                 <Button
-                                    colorScheme="blue"
+                                    leftIcon={
+                                        <FaBitcoin size={"22px"} />
+                                    }
+
+                                    colorScheme="orange"
                                     size="sm"
                                     mt={2}
                                     variant={'outline'}

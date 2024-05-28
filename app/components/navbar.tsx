@@ -1,25 +1,37 @@
 'use client'
 
-import { Flex, Menu, MenuButton, MenuItem, MenuList, Spacer, Text } from '@chakra-ui/react';
+import { Button, Flex, Spacer, useDisclosure } from '@chakra-ui/react';
+import SubmitFormModal from './submitFormModal';
 const Navbar = () => {
-
+    const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
             <Flex
                 as="nav"
-                bg="black"
-                color="white"
+                bg="transparent"
                 padding={4}
                 borderRadius={5}
-                border="1px solid white"
                 align="center"
+                m={-20}
                 justify="space-between"
-                boxShadow="md"
             >
-                <Text fontSize="xl" fontWeight="bold" ml={4}>
+                {/* <Text fontSize="xl" fontWeight="bold" ml={4}>
                     Book of Stamp
-                </Text>
+                </Text> */}
                 <Spacer />
+                <SubmitFormModal isOpen={isOpen} onClose={onClose} />
+                <Button
+                    onClick={onOpen}
+                    color={'black'}
+                    variant={'outline'}
+                    _hover={{ transform: "scale(1.05)" }}
+                    h={'auto'}
+                    fontSize={'48px'}
+                >
+                    Submit Art
+                </Button>
+
+                {/* 
                 <Menu>
                     <MenuButton>
                         <Text color={'white'} fontSize="lg" fontWeight="bold">
@@ -39,6 +51,8 @@ const Navbar = () => {
                     </MenuList >
 
                 </Menu >
+ */}
+
             </Flex >
         </>
     )

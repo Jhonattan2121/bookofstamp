@@ -49,7 +49,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                 <ModalBody>
                     <VStack spacing={4}>
                         <Image
-                            src="https://stampchain.io/stamps/e16b151228f959a8c91251eec63b390326960c4adbc85b90f1d556454b549e19.png"
+                            src="https://i.pinimg.com/originals/97/69/10/976910c6d51c3cab7eb7aad4f2f610fe.gif"
                             alt="skateboard"
                             boxSize={["80px", "160px"]}
                         />
@@ -69,7 +69,9 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                         <FormControl>
                             <FormLabel color="white">Telegram Username</FormLabel>
                             <InputGroup>
-                                <InputLeftElement pointerEvents="none" children="@" color="gray.400" />
+                                <InputLeftElement pointerEvents="none" color="gray.400">
+                                    @
+                                </InputLeftElement>
                                 <Input
                                     placeholder=' (e.g. @kevin) '
                                     className='input'
