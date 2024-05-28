@@ -1,7 +1,10 @@
+import { ColorModeScript } from "@chakra-ui/react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Share_Tech_Mono } from "next/font/google";
 import Navbar from "./components/navbar";
-const inter = Inter({ subsets: ["latin"] });
+
+
+const share_tech_mono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Book of Stamp",
@@ -15,7 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body >
+      <body className={share_tech_mono.className} >
+        <ColorModeScript initialColorMode="dark" />
+
         <Navbar />
         {children}
       </body>
