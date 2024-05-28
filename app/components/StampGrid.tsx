@@ -1,13 +1,11 @@
 'use client'
-import { Text, Spinner, Center, Image, VStack } from '@chakra-ui/react';
+import { Center, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Slider from 'react-slick';
-import StampCard from './stampCard';
-import getStampsInfo from '../utils/getStampsInfo';
-import { StampInfo } from '../utils/getStampsInfo';
-import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import getStampsInfo, { StampInfo } from '../utils/getStampsInfo';
+import StampCard from './stampCard';
 
 interface StampGridProps {
     stampIds: string[];

@@ -1,5 +1,5 @@
 
-import { Box, Image, Center } from '@chakra-ui/react';
+import { Box, Center, Image } from '@chakra-ui/react';
 import StampGrid from './components/StampGrid';
 import { stamp_ids } from './utils/stampIDs';
 

@@ -1,17 +1,16 @@
 'use client'
 import {
     Box,
-    Text,
-    Image,
     Card,
-    CardHeader,
     CardBody,
     CardFooter,
-    Heading,
-    useDisclosure,
-    Flex,
+    CardHeader,
     Center,
-    Divider
+    Divider,
+    Flex,
+    Heading,
+    Image,
+    Text
 } from '@chakra-ui/react';
 import { StampInfo } from '../utils/getStampsInfo';
 
@@ -60,9 +59,9 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                     <Center>
                         <CardFooter p={4} >
                             <Box borderWidth="1px" borderRadius="10px" p={4} >
-                                <Text fontSize="sm"><strong>CPID:</strong> {stampInfo.cpid}</Text>
-                                <Text fontSize="sm"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
-                                <Text fontSize="sm"><strong>Supply:</strong> {stampInfo.supply}</Text>
+                                <Text color={"white"} fontSize="sm"><strong>CPID:</strong> {stampInfo.cpid}</Text>
+                                <Text color={"white"} fontSize="sm"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
+                                <Text color={"white"} fontSize="sm"><strong>Supply:</strong> {stampInfo.supply}</Text>
                             </Box>
                         </CardFooter>
                     </Center>

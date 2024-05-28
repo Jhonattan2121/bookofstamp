@@ -1,19 +1,41 @@
 'use client'
 
-import { Box, Flex, Text, Button, Image, useDisclosure } from '@chakra-ui/react';
+import { Button, Flex, Spacer, Text, useDisclosure } from '@chakra-ui/react';
 import SubmitFormModal from './submitFormModal';
+
 const Navbar = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     return (
-        <Flex as="nav" className="navbar" borderRadius={5} border={"1px solid white"}>
+        <>
             <SubmitFormModal isOpen={isOpen} onClose={onClose} />
-            <Text fontSize="xl" fontWeight="bold">
-                Book of Stamp
-            </Text>
-            <Button className="navbar-button" onClick={onOpen}>
-                Submit Art
-            </Button>
-        </Flex>
+
+            <Flex
+                as="nav"
+                bg="gray"
+                color="white"
+                padding={4}
+                borderRadius={5}
+                border="1px solid white"
+                align="center"
+                justify="space-between"
+                boxShadow="md"
+            >
+                <Text fontSize="xl" fontWeight="bold" ml={4}>
+                    Book of Stamp
+                </Text>
+                <Spacer />
+                <Button
+                    onClick={onOpen}
+                    bg="green.500"
+                    color="white"
+                    _hover={{ bg: "green.400", transform: "scale(1.05)" }}
+                    mr={4}
+                >
+                    Submit Art
+                </Button>
+            </Flex>
+        </>
     )
 }
 
