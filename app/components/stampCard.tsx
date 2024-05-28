@@ -1,16 +1,17 @@
 'use client'
 import {
     Box,
+    Button,
     Card,
     CardBody,
     CardFooter,
     CardHeader,
     Center,
-    Divider,
     Flex,
-    Heading,
+    HStack,
     Image,
-    Text
+    Text,
+    VStack,
 } from '@chakra-ui/react';
 import { StampInfo } from '../utils/getStampsInfo';
 
@@ -39,17 +40,19 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                 minW="300px"
                 borderRadius="10px"
             >
-                <CardHeader textAlign="center" bg="gray.900" p={2}>
-                    <Heading size="md" color="yellow.400">{stampId}</Heading>
+                <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
+                    <HStack justify={"center"}>
+                        <Image src='http://localhost:3000/walletIcon.webp' alt="Logo" boxSize="20px" />
+                        <Text size="md" color="grey.200">{stampId}</Text>
+                    </HStack>
                 </CardHeader>
-                <Divider />
                 <Box border={"0.6px solid grey"} borderRadius="10px" p={10} >
-                    <CardBody bg="gray.800" p={4}>
+                    <CardBody >
                         <Center>
                             <Image
                                 src={stampInfo.stamp_url}
                                 alt={'stamp'}
-                                boxSize="200px"
+                                boxSize="240px"
                                 borderRadius="10px"
                                 borderWidth="2px"
                                 borderColor="yellow.400"
@@ -57,12 +60,24 @@ const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
                         </Center>
                     </CardBody>
                     <Center>
-                        <CardFooter p={4} >
-                            <Box borderWidth="1px" borderRadius="10px" p={4} >
-                                <Text color={"white"} fontSize="sm"><strong>CPID:</strong> {stampInfo.cpid}</Text>
-                                <Text color={"white"} fontSize="sm"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
-                                <Text color={"white"} fontSize="sm"><strong>Supply:</strong> {stampInfo.supply}</Text>
-                            </Box>
+                        <CardFooter mb={-5}>
+                            <VStack>
+
+                                <Box borderWidth="1px" borderRadius="10px" p={3} >
+                                    <Text color={"white"} fontSize="md"><strong>CPID:</strong> {stampInfo.cpid}</Text>
+                                    <Text color={"white"} fontSize="md"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
+                                    <Text color={"white"} fontSize="md"><strong>Supply:</strong> {stampInfo.supply}</Text>
+                                </Box>
+                                <Button
+                                    colorScheme="blue"
+                                    size="sm"
+                                    mt={2}
+                                    variant={'outline'}
+                                    w={'100%'}
+                                >
+                                    Dispensers
+                                </Button>
+                            </VStack>
                         </CardFooter>
                     </Center>
                 </Box>
