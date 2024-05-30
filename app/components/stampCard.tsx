@@ -1,128 +1,129 @@
 'use client'
-import {
-    Box,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Center,
-    Flex,
-    HStack,
-    Image,
-    Text,
-    VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 import { FaBitcoin } from "react-icons/fa";
-import { StampInfo } from '../utils/getStampsInfo';
-interface Holder {
-    address: string;
-    quantity: number;
-}
+import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
+import DispenserModal from './dispenserModal';
+
 interface StampCardProps {
-    stampInfo: StampInfo | null;
     stampId: string;
 }
 
-const StampCard: React.FC<StampCardProps> = ({ stampInfo, stampId }) => {
-    if (!stampInfo) {
-        return <Text>Error loading stamp information.</Text>;
+const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
+    const [stampData, setStampData] = useState<StampInfoResponse['data'] | null>(null);
+    const [isDispenserOpen, setIsDispenserOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            async ([entry]) => {
+                if (entry.isIntersecting) {
+                    observer.disconnect();
+                    try {
+                        const data = await getStampData(stampId);
+                        setStampData(data.data);
+                    } catch (err) {
+                        setError('Failed to fetch stamp information.');
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (cardRef.current) {
+            observer.observe(cardRef.current);
+        }
+
+        return () => {
+            if (cardRef.current) {
+                observer.unobserve(cardRef.current);
+            }
+        };
+    }, [stampId]);
+
+    if (error) {
+        return <Text>{error}</Text>;
     }
 
     return (
-        <Flex justify="center">
+        <Flex ref={cardRef} justify="center">
+            <DispenserModal stampData={stampData} isOpen={isDispenserOpen} onClose={() => setIsDispenserOpen(false)} />
             <Card
                 bg={"black"}
                 border={"0.6px solid "}
                 size="sm"
                 boxShadow="none"
                 p={2}
-                minW="300px"
+                minW="200px"
                 borderRadius="10px"
-
-
             >
                 <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                     <HStack justify={"center"}>
-                        <Image src='http://localhost:3000/walletIcon.webp' alt="Logo" boxSize="20px" />
+                        <Image src='walletIcon.webp' alt="Logo" boxSize="20px" />
                         <Text size="md" color="grey.200">{stampId}</Text>
                     </HStack>
                 </CardHeader>
-                <Box borderRadius="10px" p={10} >
-                    <CardBody
-                        bg={"transparent"}
-                    >
-                        <Center >
-                            <Image
-                                src={stampInfo.stamp_url}
-                                alt={'stamp'}
-                                boxSize="240px"
-                                borderRadius="10px"
-                                borderWidth="2px"
-                                borderColor="yellow"
-                                _hover={{
-                                    transform: "scale(1.02)",
-                                    transition: "transform 0.2s"
-                                }}
-                            />
+                <Box borderRadius="10px" p={10}>
+                    <CardBody bg={"transparent"}>
+                        <Center>
+                            {loading ? (
+                                <Skeleton boxSize="240px" borderRadius="10px" />
+                            ) : (
+                                <Image
+                                    src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
+                                    alt={'stamp'}
+                                    boxSize="240px"
+                                    borderRadius="10px"
+                                    borderWidth="2px"
+                                    borderColor="yellow"
+                                    _hover={{
+                                        transform: "scale(1.02)",
+                                        transition: "transform 0.2s"
+                                    }}
+                                />
+                            )}
                         </Center>
                     </CardBody>
-                    <Center>
-                        <CardFooter mb={-5}>
-                            <VStack>
-
-                                <Box borderWidth="1px" borderRadius="10px" p={3} >
-                                    <Text color={"grey"} fontSize="md"><strong>CPID:</strong> {stampInfo.cpid}</Text>
-                                    <Text color={"grey"} fontSize="md"><strong>Block Index:</strong> {stampInfo.block_index}</Text>
-                                    <Text color={"grey"} fontSize="md"><strong>Supply:</strong> {stampInfo.supply}</Text>
-                                </Box>
-                                <Button
-                                    leftIcon={
-                                        <FaBitcoin size={"22px"} />
-                                    }
-                                    colorScheme="orange"
-                                    size="sm"
-                                    mt={2}
-                                    variant={'outline'}
-                                    w={'auto'}
-                                >
-                                    Dispensers
-                                </Button>
-                            </VStack>
-                        </CardFooter>
-                    </Center>
+                    {loading ? (
+                        <Box mt={4} p={3} height="145px">
+                            <SkeletonText noOfLines={3} spacing="4" skeletonHeight="4" />
+                            <Skeleton mt={2} height="35px" width="100px" />
+                            <Skeleton mt={2} height="35px" width="100px" />
+                        </Box>
+                    ) : (
+                        stampData && (
+                            <Center>
+                                <CardFooter mb={-5}>
+                                    <VStack>
+                                        <Box borderWidth="1px" borderRadius="10px" p={3}>
+                                            <Text color={"grey"} fontSize="md"><strong>CPID:</strong> {stampData.stamp.cpid}</Text>
+                                            <Text color={"grey"} fontSize="md"><strong>Block Index:</strong> {stampData.stamp.block_index}</Text>
+                                            <Text color={"grey"} fontSize="md"><strong>Supply:</strong> {stampData.stamp.supply}</Text>
+                                        </Box>
+                                        <Button
+                                            leftIcon={<FaBitcoin size={"22px"} />}
+                                            colorScheme="orange"
+                                            size="sm"
+                                            mt={2}
+                                            variant={'outline'}
+                                            w={'auto'}
+                                            onClick={() => setIsDispenserOpen(true)}
+                                        >
+                                            Dispensers
+                                        </Button>
+                                    </VStack>
+                                </CardFooter>
+                            </Center>
+                        )
+                    )}
                 </Box>
             </Card>
         </Flex>
-    )
+    );
 }
 
 export default StampCard;
-
-
-
-{/* <VStack align="start" w="100%">
-                        <Button onClick={onToggle} mt={4} colorScheme="yellow" size="sm">
-                            {isOpen ? "Hide Holders" : "Show Holders"}
-                        </Button>
-                        <Collapse in={isOpen} animateOpacity>
-                            <Box mt={4} w="100%">
-                                <Heading size="xs" color="yellow.400">Holders:</Heading>
-                                <Table variant="simple" colorScheme="yellow" mt={2}>
-                                    <Tbody>
-                                        {holders.map((holder, index) => (
-                                            <Tr key={index}>
-                                                <Td>
-                                                    <a href={`https://www.blockchain.com/btc/address/${holder.address}`} target="_blank" rel="noopener noreferrer" style={{ color: 'yellow.300', fontSize: '0.8em' }}>
-                                                        {holder.address}
-                                                    </a>
-                                                </Td>
-                                                <Td fontSize="0.8em">{holder.quantity}</Td>
-                                            </Tr>
-                                        ))}
-                                    </Tbody>
-                                </Table>
-                            </Box>
-                        </Collapse>
-                    </VStack>
-                    */}

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-import getStampsInfo, { StampInfo } from '../utils/getStampsInfo';
 import StampCard from './stampCard';
 
 interface StampGridProps {
@@ -12,27 +11,12 @@ interface StampGridProps {
 }
 
 const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
-    const [stampData, setStampData] = useState<Record<string, StampInfo | null>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchAllStampsInfo = async () => {
-            try {
-                const data: Record<string, StampInfo | null> = {};
-                for (const stampId of stampIds) {
-                    const info = await getStampsInfo(stampId);
-                    data[stampId] = info ? info.data.stamp : null;
-                }
-                setStampData(data);
-            } catch (err) {
-                setError('Failed to fetch stamp information.');
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchAllStampsInfo();
-    }, [stampIds]);
+        setLoading(false);
+    }, []);
 
     if (loading) {
         return (
@@ -40,7 +24,7 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
                 <VStack>
                     <Image
                         src="https://www.gifcen.com/wp-content/uploads/2022/03/pepe-the-frog-gif-1.gif"
-                        alt=""
+                        alt="Loading..."
                         boxSize="200px"
                     />
                     <Text fontSize="48px">Loading...</Text>
@@ -59,6 +43,10 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
         speed: 500,
         slidesToShow: 3,
         slidesToScroll: 1,
+        lazyLoad: 'ondemand' as 'ondemand',
+        centerMode: true,
+        autoplay: true,
+        autoplaySpeed: 3000,
         responsive: [
             {
                 breakpoint: 1024,
@@ -73,7 +61,16 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
                 breakpoint: 600,
                 settings: {
                     slidesToShow: 1,
-                    slidesToScroll: 1
+                    slidesToScroll: 1,
+                    dots: true,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    dots: true,
                 }
             }
         ]
@@ -81,9 +78,9 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
 
     return (
         <Slider {...settings}>
-            {stampIds.map(stampId => (
+            {stampIds.map((stampId) => (
                 <div key={stampId}>
-                    <StampCard stampId={stampId} stampInfo={stampData[stampId]} />
+                    <StampCard stampId={stampId} />
                 </div>
             ))}
         </Slider>
