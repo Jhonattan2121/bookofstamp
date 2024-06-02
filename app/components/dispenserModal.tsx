@@ -1,14 +1,21 @@
 import {
+    Box,
     Button,
     Center,
     Image,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
     Modal, ModalBody, ModalCloseButton, ModalContent,
     ModalFooter,
     ModalHeader, ModalOverlay,
     Text,
     VStack
 } from '@chakra-ui/react';
-import React from 'react';
+import QRCode from 'qrcode.react';
+import React, { useEffect, useState } from 'react';
+import { FaArrowDown } from 'react-icons/fa';
 
 export interface Dispenser {
     tx_hash: string;
@@ -28,22 +35,29 @@ export interface Dispense {
     tx_hash: string;
 }
 
-
 interface DispenserModalProps {
-    // type stampData as the data inside StampInfoResponse 
     stampData: any;
     isOpen: boolean;
     onClose: () => void;
 }
 
 const DispenserModal: React.FC<DispenserModalProps> = ({ stampData, isOpen, onClose }) => {
+    const [dispensers, setDispensers] = useState<Dispenser[]>([]);
+    const [selectedDispenser, setSelectedDispenser] = useState<Dispenser | null>(null);
+
     const handleClose = () => {
         onClose();
     }
 
+    useEffect(() => {
+        if (stampData?.dispensers?.length > 0) {
+            setDispensers(stampData.dispensers);
+            setSelectedDispenser(stampData.dispensers[0]);
+        }
+    }, [stampData]);
+
     return (
-        <Modal isCentered
-            isOpen={isOpen} onClose={onClose} >
+        <Modal isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent
                 bg="black"
@@ -55,38 +69,74 @@ const DispenserModal: React.FC<DispenserModalProps> = ({ stampData, isOpen, onCl
             >
                 <ModalHeader>
                     <Center>
-                        <Text fontSize="xl" fontWeight="bold" color="white">
+                        <Text fontSize="4xl" fontWeight="bold" color="white">
                             Dispenser
                         </Text>
                     </Center>
                     <ModalCloseButton />
                 </ModalHeader>
                 <ModalBody>
-                    <VStack spacing={4}>
+                    <Center>
+                        <Text fontSize="2xl" color="white">
+                            {stampData?.stamp.title}
+                        </Text>
                         <Image
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgegRp7CCBl0yln6jta61xEn0rvny1b1fyaw&s"
-                            alt="skateboard"
-                            boxSize={["80px", "160px"]}
+                            src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
+                            alt={'stamp'}
+                            boxSize="140px"
+                            borderRadius="10px"
+                            borderWidth="2px"
+                            borderColor="yellow"
+                            _hover={{
+                                transform: "scale(1.02)",
+                                transition: "transform 0.2s"
+                            }}
                         />
+                    </Center>
 
+                    <VStack spacing={4}>
+                        {dispensers.length === 0 ? (
+                            <>
+                                <Image src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="No Dispensers" />
+                                <Text fontSize="md" color="white">
+                                    No dispensers available
+                                </Text>
+                            </>
+                        ) : (
+                            <>
+                                <Text fontSize="md" color="white">
+                                    {dispensers.length} Dispensers available
+                                </Text>
+                                <Menu >
+                                    <MenuButton as={Button} rightIcon={<FaArrowDown />} variant={'outline'} colorScheme="orange">
+                                        Select Dispenser
+                                    </MenuButton>
+                                    <Center>
+                                        <MenuList bg={'black'} border={'1px solid orange.200'} >
+                                            {dispensers.map((dispenser, index) => (
+                                                <MenuItem _hover={{ bg: 'orange', color: 'black' }} bg={'black'} key={index} onClick={() => setSelectedDispenser(dispenser)}>
+                                                    {dispenser.source}
+                                                </MenuItem>
+                                            ))}
+                                        </MenuList>
+                                    </Center>
+                                </Menu>
+                                {selectedDispenser && (
+                                    <Center mt={4}>
+                                        <Box border={'1px solid orange'}>
+                                            <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
+                                        </Box>
+                                    </Center>
+                                )}
+                            </>
+                        )}
                     </VStack>
                 </ModalBody>
-                <ModalFooter>
-                    <Center w="100%">
-                        <Button
-                            variant="solid"
-                            bg="green.500"
-                            color="white"
-                            size="lg"
-                            w="100%"
-                            maxW="200px"
-                            _hover={{ bg: "green.400", transform: "scale(1.05)" }}
-                            onClick={handleClose}
-                        >
-                            Submit Stamp
-                        </Button>
-                    </Center>
-                </ModalFooter>
+                {dispensers.length > 0 && (
+                    <ModalFooter>
+
+                    </ModalFooter>
+                )}
             </ModalContent>
         </Modal>
     );

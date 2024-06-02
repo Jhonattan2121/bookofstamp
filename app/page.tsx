@@ -1,13 +1,11 @@
 
 'use client'
-import { Box, Button, Center, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Text, VStack, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Center, HStack, Image, Menu, MenuButton, MenuItem, MenuList, VStack, useDisclosure } from '@chakra-ui/react';
 import StampGrid from './components/StampGrid';
 import SubmitFormModal from './components/submitFormModal';
 import { stamp_ids } from './utils/stampIDs';
 const HomePage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-
   const chaptersList = [
     {
       id: 1,
@@ -34,16 +32,15 @@ const HomePage = () => {
 
   return (
     <>
-      <Box m={20} p={5}>
-        {/* <Cursor /> */}
+      <Box m={10} p={5}>
         <Center>
           <SubmitFormModal isOpen={isOpen} onClose={onClose} />
           <HStack>
-            <Image mb={10} boxSize="140px" src="AZlogo.webp" alt="Logo" className="navbar-logo" />
+            <Image mb={-3} boxSize="140px" src="AZlogo.webp" alt="Logo" className="navbar-logo" />
             <VStack>
-              <Text ml={"5"} fontSize="5xl" fontWeight="bold" color="white">
+              {/* <Text ml={"5"} fontSize="5xl" fontWeight="bold" color="white">
                 Book of Stamp
-              </Text>
+              </Text> */}
               <Menu     >
                 <Button
                   onClick={onOpen}

@@ -1,5 +1,5 @@
 'use client'
-import { Center, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
@@ -79,9 +79,9 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
     return (
         <Slider {...settings}>
             {stampIds.map((stampId) => (
-                <div key={stampId}>
+                <Box p={5} m={2} key={stampId}>
                     <StampCard stampId={stampId} />
-                </div>
+                </Box>
             ))}
         </Slider>
     );
