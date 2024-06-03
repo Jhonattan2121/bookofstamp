@@ -23,6 +23,7 @@ export interface Dispenser {
     source: string;
     cpid: string;
     give_quantity: number;
+    
 }
 
 export interface Dispense {

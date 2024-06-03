@@ -1,5 +1,5 @@
 'use client'
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
 import { useEffect, useRef, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
@@ -28,7 +28,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const [dispensers, setDispensers] = useState<Dispenser[]>([]);
     const [selectedDispenser, setSelectedDispenser] = useState<Dispenser | null>(null);
 
-    const cardWidth = "300px"; // Set a fixed width for the card
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -70,21 +69,22 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         return <Text>{error}</Text>;
     }
 
+
     return (
-        <Flex ref={cardRef} justify="center">
+        <Flex ref={cardRef} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
             {isDispenserOpen &&
                 <DispenserModal stampData={stampData} isOpen={isDispenserOpen} onClose={() => setIsDispenserOpen(false)} />
             }
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-                {/* Face Side */}
                 <Card
                     bg={"black"}
                     border={"0.6px solid "}
                     size="sm"
                     boxShadow="none"
                     p={2}
-                    minW={cardWidth} // Apply fixed width
                     borderRadius="10px"
+
+
                 >
                     <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                         <HStack justify={"center"}>
@@ -92,11 +92,11 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                             <Text size="md" color="grey.200">{stampId}</Text>
                         </HStack>
                     </CardHeader>
-                    <Box borderRadius="10px" p={10}>
+                    <Box borderRadius="10px" p={[10, 4]}>
                         <CardBody bg={"transparent"}>
                             <Center>
                                 {loading ? (
-                                    <Skeleton boxSize="240px" borderRadius="10px" />
+                                    <Skeleton boxSize={["200px", "240px"]} borderRadius="10px" />
                                 ) : (
                                     <Image
                                         src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
@@ -147,35 +147,45 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                         )}
                     </Box>
                 </Card>
-                {/* Back Side */}
+
                 <Card
+
                     bg={"black"}
                     border={"0.6px solid "}
                     size="sm"
                     boxShadow="none"
-                    p={2}
-                    minW={cardWidth} // Apply fixed width
+                    p={10}
                     borderRadius="10px"
-                >
-                    <CardBody bg={"transparent"} textAlign="center">
-                        <Text color="white">Dispenser is now open!</Text>
-                        <Center>
 
+
+                >
+                    <CardBody
+                        textAlign="center"
+                        width="100%"
+                        height="100%"
+                        borderRadius="20px"
+                        padding={["20px", "40px"]}
+                    >
+                        <Text color="white" fontSize="xl" fontWeight="bold" mb="10px">Dispenser is now open!</Text>
+
+                        <Center>
                             <Image
                                 m={2}
                                 src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
                                 alt={'stamp'}
-                                boxSize="140px"
-                                borderRadius="10px"
+                                boxSize="80px"
+
                                 borderWidth="2px"
                                 borderColor="yellow"
+                                position="relative"
                                 _hover={{
                                     transform: "scale(1.02)",
                                     transition: "transform 0.2s"
                                 }}
                             />
                         </Center>
-                        <VStack spacing={4}>
+
+                        <VStack spacing={1} mt="30px"  >
                             {dispensers.length === 0 ? (
                                 <>
                                     <Image src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="No Dispensers" />
@@ -185,26 +195,49 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                 </>
                             ) : (
                                 <>
-                                    <Text fontSize="md" color="white">
+                                    <Text fontSize="md" color="white" mt="-32px">
                                         {dispensers.length} Dispensers available
                                     </Text>
-                                    <Menu >
-                                        <MenuButton as={Button} rightIcon={<FaArrowDown />} variant={'outline'} colorScheme="orange">
-                                            Select Dispenser
-                                        </MenuButton>
-                                        <Center>
-                                            <MenuList bg={'black'} border={'1px solid orange.200'} >
+
+                                    <Popover>
+                                        <PopoverTrigger>
+                                            <Button
+                                                rightIcon={<FaArrowDown />}
+                                                variant="outline"
+                                                colorScheme="orange"
+                                                size="md"
+                                                borderRadius="10px"
+                                                _hover={{ bg: 'orange.300' }}
+
+                                            >
+                                                Select Dispenser
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            bg={'black'}
+                                            border={'1px solid orange.200'}
+                                            borderRadius="10px"
+                                            color="white"
+                                        >
+                                            <PopoverArrow />
+                                            <PopoverBody>
                                                 {dispensers.map((dispenser, index) => (
-                                                    <MenuItem _hover={{ bg: 'orange', color: 'black' }} bg={'black'} key={index} onClick={() => setSelectedDispenser(dispenser)}>
+                                                    <Box
+                                                        key={index}
+                                                        _hover={{ bg: 'orange.300', color: 'black' }}
+                                                        onClick={() => setSelectedDispenser(dispenser)}
+                                                        cursor="pointer"
+                                                        p="2"
+                                                    >
                                                         {dispenser.source}
-                                                    </MenuItem>
+                                                    </Box>
                                                 ))}
-                                            </MenuList>
-                                        </Center>
-                                    </Menu>
+                                            </PopoverBody>
+                                        </PopoverContent>
+                                    </Popover>
                                     {selectedDispenser && dispensers.length > 0 && (
                                         <Center mt={4}>
-                                            <Box border={'1px solid orange'}>
+                                            <Box border={'1px solid orange'} borderRadius="10px" p="10px">
                                                 <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
                                             </Box>
                                         </Center>
@@ -212,9 +245,24 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                 </>
                             )}
                         </VStack>
-                        <Button onClick={() => setIsFlipped(false)} colorScheme="blue" mt={4}>Close</Button>
+
+                        <Button
+                            onClick={() => setIsFlipped(false)}
+                            colorScheme="blue"
+                            mt={6}
+                            size="md"
+                            variant="solid"
+                            bg="orange" // botão laranja
+                            color="white" // texto branco
+                            borderRadius="10px"
+                            _hover={{ bg: 'darkorange' }} // hover de laranja mais escuro
+                        >
+                            Close
+                        </Button>
                     </CardBody>
+
                 </Card>
+
             </ReactCardFlip>
         </Flex>
     );

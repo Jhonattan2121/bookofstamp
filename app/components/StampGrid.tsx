@@ -44,7 +44,7 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
         slidesToShow: 3,
         slidesToScroll: 1,
         lazyLoad: 'ondemand' as 'ondemand',
-        centerMode: true,
+
         autoplay: true,
         autoplaySpeed: 3000,
         responsive: [
@@ -66,24 +66,27 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
                 }
             },
             {
-                breakpoint: 480,
+                breakpoint: 380,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1,
                     dots: true,
+                   
                 }
             }
         ]
     };
 
     return (
-        <Slider {...settings}>
-            {stampIds.map((stampId) => (
-                <Box p={5} m={2} key={stampId}>
-                    <StampCard stampId={stampId} />
-                </Box>
-            ))}
-        </Slider>
+        <Box mx={8}>
+            <Slider {...settings}>
+                {stampIds.map((stampId) => (
+                    <Box key={stampId}>
+                        <StampCard stampId={stampId} />
+                    </Box>
+                ))}
+            </Slider>
+        </Box>
     );
 }
 
