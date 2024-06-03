@@ -2,40 +2,42 @@
 'use client'
 import { Box, Button, Center, HStack, Image, Menu, MenuButton, MenuItem, MenuList, VStack, useDisclosure } from '@chakra-ui/react';
 import { NextPage } from 'next';
+import { useState } from 'react';
 import StampGrid from './components/StampGrid';
 import SubmitFormModal from './components/submitFormModal';
-import { stamp_ids } from './utils/stampIDs';
+import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from './utils/stampIDs';
 
 
 const HomePage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [currentStampIds, setCurrentStampIds] = useState<string[]>(chapter1StampIds);
 
-  const chaptersList: { id: number; title: string; description: string; stamp: string; image: string; }[] = [
+  const chaptersList = [
     {
       id: 1,
       title: "Chapter 1",
       description: "Chapter 1 Description",
-      stamp: "Stamp 1",
+      stampIds: chapter1StampIds,
       image: "https://via.placeholder.com/150",
     },
     {
       id: 2,
       title: "Chapter 2",
       description: "Chapter 2 Description",
-      stamp: "Stamp 2",
+      stampIds: chapter2StampIds,
       image: "https://via.placeholder.com/150",
     },
     {
       id: 3,
       title: "Chapter 3",
       description: "Chapter 3 Description",
-      stamp: "Stamp 3",
+      stampIds: chapter3StampIds,
       image: "https://via.placeholder.com/150",
     },
   ];
 
   const handleChapterClick = (stamps: string[]) => {
-    console.log("Stamps clicked:", stamps);
+    setCurrentStampIds(stamps);
   };
 
   return (
@@ -63,16 +65,15 @@ const HomePage: NextPage = () => {
                 <MenuButton ml={"5"} w={'90%'} as={Button} colorScheme="orange" variant="outline">
                   Chapters
                 </MenuButton>
-
                 <MenuList bg="orange.200">
                   {chaptersList.map((chapter) => (
                     <MenuItem
-                      onClick={() => handleChapterClick([chapter.stamp])}
+                      onClick={() => handleChapterClick(chapter.stampIds)}
                       _hover={{ bg: 'black', color: 'orange.200' }}
                       bg="orange.200"
                       color={"black"}
                       key={chapter.id}
-                      value={chapter.stamp}>
+                    >
                       {chapter.title}
                     </MenuItem>
                   ))}
@@ -82,8 +83,9 @@ const HomePage: NextPage = () => {
           </HStack>
         </Center>
       </Box>
-      <StampGrid stampIds={stamp_ids} />
+      <StampGrid stampIds={currentStampIds} />
       <Center mt={10} _hover={{ transform: "scale(1.05)" }} />
+
     </>
   );
 }
