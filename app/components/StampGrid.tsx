@@ -1,7 +1,6 @@
 'use client'
-import { Box, Center, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, Image, Slider, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import StampCard from './stampCard';
