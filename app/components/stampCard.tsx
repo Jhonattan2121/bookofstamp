@@ -1,5 +1,5 @@
 'use client'
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
 import { useEffect, useRef, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
@@ -7,6 +7,7 @@ import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
 import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
 import DispenserModal from './dispenserModal';
+
 export interface Dispenser {
     tx_hash: string;
     block_index: number;
@@ -14,6 +15,7 @@ export interface Dispenser {
     cpid: string;
     give_quantity: number;
 }
+
 interface StampCardProps {
     stampId: string;
 }
@@ -27,7 +29,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [dispensers, setDispensers] = useState<Dispenser[]>([]);
     const [selectedDispenser, setSelectedDispenser] = useState<Dispenser | null>(null);
-
+    const toast = useToast();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -65,10 +67,40 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         }
     }, [stampData]);
 
+    const CustomToast = ({ title, description }: { title: string, description: string }) => (
+        <Box
+            bg="black"
+            color="orange"
+            border="1px solid orange"
+            borderRadius="10px"
+            p={4}
+            shadow="md"
+        >
+            <HStack>
+                <Image src='https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif' alt="Logo" boxSize="30px" />
+                <Box>
+                    <Text fontWeight="bold">{title}</Text>
+                    <Text>{description}</Text>
+                </Box>
+            </HStack>
+        </Box>
+    );
+
+    const handleCopyAddress = (address: string) => {
+        navigator.clipboard.writeText(address);
+        toast({
+            render: () => <CustomToast title="Address copied." description="The wallet address has been copied to your clipboard." />,
+            duration: 3000,
+            isClosable: true,
+            position: 'top-right',
+        });
+    };
+
+
+
     if (error) {
         return <Text>{error}</Text>;
     }
-
 
     return (
         <Flex ref={cardRef} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
@@ -85,7 +117,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     borderRadius="10px"
                     width="350px"
                     height="550px"
-
                 >
                     <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                         <HStack justify={"center"}>
@@ -208,18 +239,15 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                             Select Dispenser
                                         </MenuButton>
                                         <MenuList
-
                                             bg="black"
                                             border="1px solid orange"
                                             borderRadius="10px"
                                             color="white"
                                             w="100%"
-
                                         >
                                             {dispensers.map((dispenser, index) => (
                                                 <MenuItem
                                                     bg="black"
-
                                                     key={index}
                                                     _hover={{ bg: 'orange.300', color: 'black' }}
                                                     onClick={() => setSelectedDispenser(dispenser)}
@@ -235,11 +263,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                     {selectedDispenser && dispensers.length > 0 && (
                                         <VStack mt={4}>
                                             <HStack>
-
                                                 <Text fontSize="md" color="white">
                                                     {formatBTCaddress(selectedDispenser.source)}
                                                 </Text>
-                                                <FaCopy size="20px" color="orange" cursor="pointer" onClick={() => navigator.clipboard.writeText(selectedDispenser.source)} />
+                                                <FaCopy size="20px" color="orange" cursor="pointer" onClick={() => handleCopyAddress(selectedDispenser.source)} />
                                             </HStack>
                                             <Box border={'1px solid orange'} borderRadius="10px" p="10px">
                                                 <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
@@ -261,10 +288,8 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                         >
                             Back
                         </Button>
-
                     </CardFooter>
                 </Card>
-
             </ReactCardFlip>
         </Flex>
     );
