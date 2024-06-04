@@ -44,7 +44,7 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
             <Swiper
                 spaceBetween={30}
                 slidesPerView={3}
-                autoplay={{ delay: 5000 }}
+                autoplay={{ delay: 3000 }}
                 effect={'coverflow'}
                 coverflowEffect={{
                     rotate: 50,

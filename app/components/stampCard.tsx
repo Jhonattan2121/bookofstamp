@@ -32,30 +32,31 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const toast = useToast();
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            async ([entry]) => {
-                if (entry.isIntersecting) {
-                    observer.disconnect();
-                    try {
-                        const data = await getStampData(stampId);
-                        setStampData(data.data);
-                    } catch (err) {
-                        setError('Failed to fetch stamp information.');
-                    } finally {
-                        setLoading(false);
-                    }
+        const observerCallback = async ([entry]: IntersectionObserverEntry[]) => {
+            if (entry.isIntersecting) {
+                observer.disconnect();
+                try {
+                    const data = await getStampData(stampId);
+                    setStampData(data.data);
+                } catch (err) {
+                    setError('Failed to fetch stamp information.');
+                } finally {
+                    setLoading(false);
                 }
-            },
-            { threshold: 0.1 }
-        );
+            }
+        };
 
-        if (cardRef.current) {
-            observer.observe(cardRef.current);
+        const observer = new IntersectionObserver(observerCallback, { threshold: 0.1 });
+
+        const currentRef = cardRef.current;
+
+        if (currentRef) {
+            observer.observe(currentRef);
         }
 
         return () => {
-            if (cardRef.current) {
-                observer.unobserve(cardRef.current);
+            if (currentRef) {
+                observer.unobserve(currentRef);
             }
         };
     }, [stampId]);
@@ -96,8 +97,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         });
     };
 
-
-
     if (error) {
         return <Text>{error}</Text>;
     }
@@ -110,7 +109,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
                 <Card
                     bg={"black"}
-                    border={"0.6px solid orange "}
+                    border={"0.6px solid #FFCC80 "}
                     size="sm"
                     boxShadow="none"
                     p={2}
@@ -182,7 +181,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
 
                 <Card
                     bg={"black"}
-                    border={"0.6px solid orange "}
+                    border={"0.6px solid #FFCC80 "}
                     size="sm"
                     boxShadow="none"
                     borderRadius="10px"
