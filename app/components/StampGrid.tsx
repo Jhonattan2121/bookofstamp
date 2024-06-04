@@ -1,9 +1,11 @@
 'use client'
-import { Box, Center, Image, Slider, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import StampCard from './stampCard';
+
 
 interface StampGridProps {
     stampIds: string[];
@@ -44,13 +46,13 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
         slidesToScroll: 1,
         lazyLoad: 'ondemand' as 'ondemand',
 
-        autoplay: true,
+        autoplay: false,
         autoplaySpeed: 3000,
         responsive: [
             {
                 breakpoint: 1024,
                 settings: {
-                    slidesToShow: 2,
+                    slidesToShow: 3,
                     slidesToScroll: 1,
                     infinite: true,
                     dots: true
@@ -59,7 +61,7 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
             {
                 breakpoint: 600,
                 settings: {
-                    slidesToShow: 1,
+                    slidesToShow: 2,
                     slidesToScroll: 1,
                     dots: true,
                 }
@@ -70,7 +72,7 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
                     slidesToShow: 1,
                     slidesToScroll: 1,
                     dots: true,
-                   
+
                 }
             }
         ]

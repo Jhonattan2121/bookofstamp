@@ -1,12 +1,12 @@
 'use client'
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
 import { useEffect, useRef, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
-import { FaArrowDown, FaBitcoin } from "react-icons/fa";
+import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
+import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
 import DispenserModal from './dispenserModal';
-
 export interface Dispenser {
     tx_hash: string;
     block_index: number;
@@ -78,12 +78,13 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
                 <Card
                     bg={"black"}
-                    border={"0.6px solid "}
+                    border={"0.6px solid orange "}
                     size="sm"
                     boxShadow="none"
                     p={2}
                     borderRadius="10px"
-
+                    width="350px"
+                    height="550px"
 
                 >
                     <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
@@ -96,7 +97,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                         <CardBody bg={"transparent"}>
                             <Center>
                                 {loading ? (
-                                    <Skeleton boxSize={["200px", "240px"]} borderRadius="10px" />
+                                    <Skeleton boxSize={["200px", "220px"]} borderRadius="10px" />
                                 ) : (
                                     <Image
                                         src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
@@ -149,32 +150,20 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                 </Card>
 
                 <Card
-
                     bg={"black"}
-                    border={"0.6px solid "}
+                    border={"0.6px solid orange "}
                     size="sm"
                     boxShadow="none"
-                    p={10}
                     borderRadius="10px"
-
-
+                    width="350px"
+                    height="550px"
                 >
-                    <CardBody
-                        textAlign="center"
-                        width="100%"
-                        height="100%"
-                        borderRadius="20px"
-                        padding={["20px", "40px"]}
-                    >
-                        <Text color="white" fontSize="xl" fontWeight="bold" mb="10px">Dispenser is now open!</Text>
-
-                        <Center>
+                    <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
+                        <HStack justify={"center"}>
                             <Image
-                                m={2}
                                 src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
                                 alt={'stamp'}
-                                boxSize="80px"
-
+                                boxSize="35px"
                                 borderWidth="2px"
                                 borderColor="yellow"
                                 position="relative"
@@ -183,84 +172,97 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                     transition: "transform 0.2s"
                                 }}
                             />
-                        </Center>
-
+                            <Text size="md" color="grey.200">{stampId}</Text>
+                        </HStack>
+                    </CardHeader>
+                    <CardBody
+                        textAlign="center"
+                        width="100%"
+                        height="100%"
+                        borderRadius="20px"
+                    >
                         <VStack spacing={1} mt="30px"  >
                             {dispensers.length === 0 ? (
                                 <>
-                                    <Image src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="No Dispensers" />
+                                    <Image src="https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif" alt="No Dispensers" />
                                     <Text fontSize="md" color="white">
                                         No dispensers available
                                     </Text>
                                 </>
                             ) : (
                                 <>
-                                    <Text fontSize="md" color="white" mt="-32px">
-                                        {dispensers.length} Dispensers available
+                                    <Text fontSize="xl" color="white" mt="-32px">
+                                        {dispensers.length}
                                     </Text>
+                                    Dispensers available
+                                    <Menu>
+                                        <MenuButton
+                                            as={Button}
+                                            rightIcon={<FaArrowDown />}
+                                            variant="outline"
+                                            colorScheme="orange"
+                                            size="md"
+                                            borderRadius="10px"
+                                            _hover={{ bg: 'orange.300' }}
+                                        >
+                                            Select Dispenser
+                                        </MenuButton>
+                                        <MenuList
 
-                                    <Popover>
-                                        <PopoverTrigger>
-                                            <Button
-                                                rightIcon={<FaArrowDown />}
-                                                variant="outline"
-                                                colorScheme="orange"
-                                                size="md"
-                                                borderRadius="10px"
-                                                _hover={{ bg: 'orange.300' }}
-
-                                            >
-                                                Select Dispenser
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            bg={'black'}
-                                            border={'1px solid orange.200'}
+                                            bg="black"
+                                            border="1px solid orange"
                                             borderRadius="10px"
                                             color="white"
+                                            w="100%"
+
                                         >
-                                            <PopoverArrow />
-                                            <PopoverBody>
-                                                {dispensers.map((dispenser, index) => (
-                                                    <Box
-                                                        key={index}
-                                                        _hover={{ bg: 'orange.300', color: 'black' }}
-                                                        onClick={() => setSelectedDispenser(dispenser)}
-                                                        cursor="pointer"
-                                                        p="2"
-                                                    >
-                                                        {dispenser.source}
-                                                    </Box>
-                                                ))}
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
+                                            {dispensers.map((dispenser, index) => (
+                                                <MenuItem
+                                                    bg="black"
+
+                                                    key={index}
+                                                    _hover={{ bg: 'orange.300', color: 'black' }}
+                                                    onClick={() => setSelectedDispenser(dispenser)}
+                                                    cursor="pointer"
+                                                    p="2"
+                                                >
+                                                    {formatBTCaddress(dispenser.source)}
+                                                </MenuItem>
+                                            ))}
+                                        </MenuList>
+                                    </Menu>
+
                                     {selectedDispenser && dispensers.length > 0 && (
-                                        <Center mt={4}>
+                                        <VStack mt={4}>
+                                            <HStack>
+
+                                                <Text fontSize="md" color="white">
+                                                    {formatBTCaddress(selectedDispenser.source)}
+                                                </Text>
+                                                <FaCopy size="20px" color="orange" cursor="pointer" onClick={() => navigator.clipboard.writeText(selectedDispenser.source)} />
+                                            </HStack>
                                             <Box border={'1px solid orange'} borderRadius="10px" p="10px">
                                                 <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
                                             </Box>
-                                        </Center>
+                                        </VStack>
                                     )}
                                 </>
                             )}
                         </VStack>
-
-                        <Button
-                            onClick={() => setIsFlipped(false)}
-                            colorScheme="blue"
-                            mt={6}
-                            size="md"
-                            variant="solid"
-                            bg="orange" // botão laranja
-                            color="white" // texto branco
-                            borderRadius="10px"
-                            _hover={{ bg: 'darkorange' }} // hover de laranja mais escuro
-                        >
-                            Close
-                        </Button>
                     </CardBody>
+                    <CardFooter>
+                        <Button
+                            leftIcon={<FaArrowDown />}
+                            colorScheme="orange"
+                            size="sm"
+                            variant={'outline'}
+                            w={'auto'}
+                            onClick={() => setIsFlipped(false)}
+                        >
+                            Back
+                        </Button>
 
+                    </CardFooter>
                 </Card>
 
             </ReactCardFlip>

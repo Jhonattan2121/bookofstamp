@@ -11,7 +11,7 @@ import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from './utils/st
 const HomePage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentStampIds, setCurrentStampIds] = useState<string[]>(chapter1StampIds);
-
+  const [currentChapter, setCurrentChapter] = useState(1);
   const chaptersList = [
     {
       id: 1,
@@ -63,12 +63,15 @@ const HomePage: NextPage = () => {
                   Submit Art
                 </Button>
                 <MenuButton ml={"5"} w={'90%'} as={Button} colorScheme="orange" variant="outline">
-                  Chapters
+                  Chapter {currentChapter}
                 </MenuButton>
                 <MenuList bg="orange.200">
                   {chaptersList.map((chapter) => (
                     <MenuItem
-                      onClick={() => handleChapterClick(chapter.stampIds)}
+                      onClick={() => {
+                        handleChapterClick(chapter.stampIds);
+                        setCurrentChapter(chapter.id);
+                      }}
                       _hover={{ bg: 'black', color: 'orange.200' }}
                       bg="orange.200"
                       color={"black"}
@@ -82,9 +85,10 @@ const HomePage: NextPage = () => {
             </VStack>
           </HStack>
         </Center>
-      </Box>
+      </Box >
+
+
       <StampGrid stampIds={currentStampIds} />
-      <Center mt={10} _hover={{ transform: "scale(1.05)" }} />
 
     </>
   );
