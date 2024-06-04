@@ -115,7 +115,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     boxShadow="none"
                     p={2}
                     borderRadius="10px"
-                    width="350px"
+                    width="310px"
                     height="550px"
                 >
                     <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
@@ -186,7 +186,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     size="sm"
                     boxShadow="none"
                     borderRadius="10px"
-                    width="350px"
+                    width="310px"
                     height="550px"
                 >
                     <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>

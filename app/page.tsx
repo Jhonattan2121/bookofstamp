@@ -65,7 +65,7 @@ const HomePage: NextPage = () => {
                 <MenuButton ml={"5"} w={'90%'} as={Button} colorScheme="orange" variant="outline">
                   Chapter {currentChapter}
                 </MenuButton>
-                <MenuList bg="orange.200">
+                <MenuList zIndex={2} bg="orange.200">
                   {chaptersList.map((chapter) => (
                     <MenuItem
                       onClick={() => {
