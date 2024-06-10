@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         Username: ${username}
         Asset Name: ${assetName}`);
       }
-
+      console.log('Submission sent to Discord');
       res.status(200).json({ message: 'Submission sent to Discord' });
     } catch (error) {
       console.error(error);

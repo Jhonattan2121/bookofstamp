@@ -1,3 +1,4 @@
+'use client'
 import {
     Button,
     Center,
@@ -12,7 +13,7 @@ import {
     Text,
     VStack
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface SubmitFormModalProps {
     isOpen: boolean;
@@ -20,15 +21,64 @@ interface SubmitFormModalProps {
 }
 
 const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) => {
-    const handleClose = () => {
-        onClose();
-    }
+    const [formData, setFormData] = useState({
+        artist: "",
+        contact: "",
+        cpid: ""
+    });
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-        console.log(key, e.target.value);
+        setFormData({
+            ...formData,
+            [key]: e.target.value
+        });
     }
+
+    const handleSubmit = async () => {
+        const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
+
+        const webhookBody = {
+            embeds: [{
+                title: 'New Stamp Art Submission',
+                fields: [
+                    { name: 'Artist Name', value: formData.artist },
+                    { name: 'Telegram/Twitter Username', value: formData.contact },
+                    { name: 'Asset Name', value: formData.cpid }
+                ],
+                image: {
+                    url: 'https://i.pinimg.com/originals/97/69/10/976910c6d51c3cab7eb7aad4f2f610fe.gif'
+                }
+            }]
+        };
+
+
+        try {
+            if (!webhookUrl) {
+                throw new Error('Webhook URL is undefined.');
+            }
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookBody),
+            });
+
+            if (response.ok) {
+                alert('Form submitted successfully!');
+                setFormData({ artist: "", contact: "", cpid: "" }); // Reset the form
+                onClose(); // Close the modal
+            } else {
+                alert('There was an error submitting the form. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Error submitting the form:', error);
+            alert('There was an error submitting the form. Please try again later.');
+        }
+    }
+
     return (
-        <Modal isCentered
-            isOpen={isOpen} onClose={onClose} >
+        <Modal isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent
                 bg="black"
@@ -57,8 +107,8 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             <FormLabel color="white">Artist Name</FormLabel>
                             <InputGroup>
                                 <Input
-                                    className='input'
-                                    onChange={(e) => handleChange(e, "name")}
+                                    value={formData.artist}
+                                    onChange={(e) => handleChange(e, "artist")}
                                     bg="gray.800"
                                     color="white"
                                     borderColor="gray.600"
@@ -73,9 +123,9 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                                     @
                                 </InputLeftElement>
                                 <Input
+                                    value={formData.contact}
                                     placeholder=' (e.g. @kevin) '
-                                    className='input'
-                                    onChange={(e) => handleChange(e, "filmmaker")}
+                                    onChange={(e) => handleChange(e, "contact")}
                                     bg="gray.800"
                                     color="white"
                                     borderColor="gray.600"
@@ -87,9 +137,9 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             <FormLabel color="white">Asset Name</FormLabel>
                             <InputGroup>
                                 <Input
+                                    value={formData.cpid}
                                     placeholder='(e.g A808011111111111111)'
-                                    className='input'
-                                    onChange={(e) => handleChange(e, "friends")}
+                                    onChange={(e) => handleChange(e, "cpid")}
                                     bg="gray.800"
                                     color="white"
                                     borderColor="gray.600"
@@ -109,7 +159,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             w="100%"
                             maxW="200px"
                             _hover={{ bg: "green.400", transform: "scale(1.05)" }}
-                            onClick={handleClose}
+                            onClick={handleSubmit}
                         >
                             Submit Stamp
                         </Button>
