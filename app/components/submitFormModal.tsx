@@ -67,7 +67,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             </InputGroup>
                         </FormControl>
                         <FormControl>
-                            <FormLabel color="white">Telegram Username</FormLabel>
+                            <FormLabel color="white">Telegram/Twitter Username</FormLabel>
                             <InputGroup>
                                 <InputLeftElement pointerEvents="none" color="gray.400">
                                     @

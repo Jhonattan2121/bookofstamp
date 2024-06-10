@@ -87,7 +87,7 @@ const HomePage: NextPage = () => {
 
       <StampGrid stampIds={currentStampIds} />
 
-      <Box p={5}>
+      {/* <Box p={5}>
         <Center>
           <Text fontSize="2xl" color="orange.200">
             RULES
@@ -113,8 +113,8 @@ const HomePage: NextPage = () => {
             NOTE: you may burn down to 1/1 from 21 if your art/submission does not find a purchaser [or one purchaser] within 48 hours of a dispenser being open.
           </Text>
         </Box>
-      </Box>
-
+      </Box> */}
+      {/* 
       <Box p={5} textAlign="center">
         <Text fontSize="lg">
           Please consider donating to help fund the green banner and keeping the project alive:
@@ -125,7 +125,7 @@ const HomePage: NextPage = () => {
         <Text fontSize="sm" mt={2}>
           ©2023 Book of Stamp
         </Text>
-      </Box>
+      </Box> */}
     </>
   );
 }
