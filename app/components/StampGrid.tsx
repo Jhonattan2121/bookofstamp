@@ -1,10 +1,6 @@
-'use client'
-import { Box, Center, Image, Text, VStack } from '@chakra-ui/react';
+'use client';
+import { Box, Center, Flex, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import StampCard from './stampCard';
 
 interface StampGridProps {
@@ -40,36 +36,15 @@ const StampGrid: React.FC<StampGridProps> = ({ stampIds }) => {
 
     return (
         <Box zIndex={0} mx={8}>
-            <Swiper
-                spaceBetween={30}
-                slidesPerView={3}
-                autoplay={{ delay: 3000 }}
-
-                pagination={{ clickable: true }}
-
-                breakpoints={{
-                    1024: {
-                        slidesPerView: 3,
-                        spaceBetween: 30,
-                    },
-                    600: {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    380: {
-                        slidesPerView: 1,
-                        spaceBetween: 10,
-                    },
-                }}
-            >
+            <Flex wrap="wrap" justify="center" gap={6}>
                 {stampIds.map((stampId) => (
-                    <SwiperSlide key={stampId}>
+                    <Box key={stampId} flexBasis={{ base: '100%', sm: '45%', md: '30%' }}>
                         <StampCard stampId={stampId} />
-                    </SwiperSlide>
+                    </Box>
                 ))}
-            </Swiper>
+            </Flex>
         </Box>
     );
-}
+};
 
 export default StampGrid;

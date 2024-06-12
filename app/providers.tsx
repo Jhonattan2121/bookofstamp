@@ -5,7 +5,7 @@ const chakraTheme = extendTheme({
         global: {
             body: {
                 bg: "black",
-
+                color: "white",
             },
         },
     },

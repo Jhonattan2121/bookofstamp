@@ -1,9 +1,10 @@
-'use client'
+'use client';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
+import { useInView } from 'react-intersection-observer';
 import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
 import DispenserModal from './dispenserModal';
@@ -26,15 +27,18 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isFlipped, setIsFlipped] = useState(false);
-    const cardRef = useRef<HTMLDivElement>(null);
     const [dispensers, setDispensers] = useState<Dispenser[]>([]);
     const [selectedDispenser, setSelectedDispenser] = useState<Dispenser | null>(null);
     const toast = useToast();
 
+    const { ref, inView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true
+    });
+
     useEffect(() => {
-        const observerCallback = async ([entry]: IntersectionObserverEntry[]) => {
-            if (entry.isIntersecting) {
-                observer.disconnect();
+        if (inView) {
+            const fetchData = async () => {
                 try {
                     const data = await getStampData(stampId);
                     setStampData(data.data);
@@ -43,23 +47,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                 } finally {
                     setLoading(false);
                 }
-            }
-        };
-
-        const observer = new IntersectionObserver(observerCallback, { threshold: 0.1 });
-
-        const currentRef = cardRef.current;
-
-        if (currentRef) {
-            observer.observe(currentRef);
+            };
+            fetchData();
         }
-
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef);
-            }
-        };
-    }, [stampId]);
+    }, [inView, stampId]);
 
     useEffect(() => {
         if (stampData?.dispensers && stampData.dispensers.length > 0) {
@@ -101,29 +92,37 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         return <Text>{error}</Text>;
     }
 
+    const formatDate = (date: string) => {
+        const d = new Date(date);
+        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+        return d.toLocaleDateString(undefined, options);
+    }
+
     return (
-        <Flex ref={cardRef} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
+        <Flex ref={ref} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
             {isDispenserOpen &&
                 <DispenserModal stampData={stampData} isOpen={isDispenserOpen} onClose={() => setIsDispenserOpen(false)} />
             }
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
                 <Card
                     bg={"black"}
-                    border={"0.6px solid #FFCC80 "}
+                    border={"2px solid white "}
                     size="sm"
+                    color={"white"}
                     boxShadow="none"
                     p={2}
-                    borderRadius="10px"
+                    borderRadius="20px"
                     width="310px"
                     height="550px"
+                    transition="transform 0.3s"
                 >
-                    <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
+                    <CardHeader borderBottom={"1px solid white"} borderTopRadius="10px" textAlign="center" bg="orange.300" p={2}>
                         <HStack justify={"center"}>
                             <Image src='walletIcon.webp' alt="Logo" boxSize="20px" />
-                            <Text size="md" color="grey.200">{stampId}</Text>
+                            <Text fontWeight={"bold"} fontSize={"24px"} color="black">Chapter X</Text>
                         </HStack>
                     </CardHeader>
-                    <Box borderRadius="10px" p={[10, 4]}>
+                    <Box borderRadius="10px" p={4}>
                         <CardBody bg={"transparent"}>
                             <Center>
                                 {loading ? (
@@ -136,10 +135,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                         borderRadius="10px"
                                         borderWidth="2px"
                                         borderColor="yellow"
-                                        _hover={{
-                                            transform: "scale(1.02)",
-                                            transition: "transform 0.2s"
-                                        }}
                                     />
                                 )}
                             </Center>
@@ -152,28 +147,26 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                             </Box>
                         ) : (
                             stampData && (
-                                <Center>
-                                    <CardFooter mb={-5}>
-                                        <VStack>
-                                            <Box borderWidth="1px" borderRadius="10px" p={3}>
-                                                <Text color={"grey"} fontSize="md"><strong>CPID:</strong> {stampData.stamp.cpid}</Text>
-                                                <Text color={"grey"} fontSize="md"><strong>Block Index:</strong> {stampData.stamp.block_index}</Text>
-                                                <Text color={"grey"} fontSize="md"><strong>Supply:</strong> {stampData.stamp.supply}</Text>
-                                            </Box>
-                                            <Button
-                                                leftIcon={<FaBitcoin size={"22px"} />}
-                                                colorScheme="orange"
-                                                size="sm"
-                                                mt={2}
-                                                variant={'outline'}
-                                                w={'auto'}
-                                                onClick={() => setIsFlipped(true)}
-                                            >
-                                                Buy Stamp
-                                            </Button>
-                                        </VStack>
-                                    </CardFooter>
-                                </Center>
+                                <CardFooter mb={-5}>
+                                    <VStack m={0} w={"100%"} >
+                                        <Box borderWidth="1px" borderRadius="10px" p={3}>
+                                            <Text color={"white"} fontSize="md"> {stampData.stamp.cpid}</Text>
+                                            <Text color={"white"} fontSize="md"><strong>Block Index:</strong> {stampData.stamp.block_index}</Text>
+                                            <Text color={"white"} fontSize="md"><strong>BlockTime:</strong> {formatDate(stampData.stamp.block_time)}</Text>
+                                        </Box>
+                                        <Button
+                                            leftIcon={<FaBitcoin size={"22px"} />}
+                                            colorScheme="yellow"
+                                            width={"100%"}
+                                            mt={2}
+                                            variant={'outline'}
+                                            w={'auto'}
+                                            onClick={() => setIsFlipped(true)}
+                                        >
+                                            Buy Stamp
+                                        </Button>
+                                    </VStack>
+                                </CardFooter>
                             )
                         )}
                     </Box>
@@ -181,28 +174,27 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
 
                 <Card
                     bg={"black"}
-                    border={"0.6px solid #FFCC80 "}
+                    border={"2px solid white"}
                     size="sm"
+                    color={"white"}
                     boxShadow="none"
-                    borderRadius="10px"
+                    p={2}
+                    borderRadius="20px"
                     width="310px"
                     height="550px"
+                    transition="transform 0.3s"
                 >
-                    <CardHeader borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
+                    <CardHeader borderBottom={'1px solid white'} borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                         <HStack justify={"center"}>
                             <Image
                                 src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
                                 alt={'stamp'}
-                                boxSize="35px"
+                                boxSize="20px"
                                 borderWidth="2px"
                                 borderColor="yellow"
                                 position="relative"
-                                _hover={{
-                                    transform: "scale(1.02)",
-                                    transition: "transform 0.2s"
-                                }}
                             />
-                            <Text size="md" color="grey.200">{stampId}</Text>
+                            <Text size="md" color="white">{stampId}</Text>
                         </HStack>
                     </CardHeader>
                     <CardBody
@@ -230,7 +222,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                             as={Button}
                                             rightIcon={<FaArrowDown />}
                                             variant="outline"
-                                            colorScheme="orange"
+                                            colorScheme="yellow"
                                             size="md"
                                             borderRadius="10px"
                                             _hover={{ bg: 'orange.300' }}
@@ -279,7 +271,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     <CardFooter>
                         <Button
                             leftIcon={<FaArrowDown />}
-                            colorScheme="orange"
+                            colorScheme="yellow"
                             size="sm"
                             variant={'outline'}
                             w={'auto'}

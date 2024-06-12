@@ -13,7 +13,8 @@ import {
     Text,
     VStack
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import getStampData from '../utils/getStampInfo';
 
 interface SubmitFormModalProps {
     isOpen: boolean;
@@ -27,30 +28,42 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
         cpid: ""
     });
 
+    const [stampImage, setStampImage] = useState<string>("");
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
         setFormData({
             ...formData,
             [key]: e.target.value
         });
-    }
+    };
+
+    const getStampImage = async (stampId: string) => {
+        const stampData = await getStampData(stampId);
+        setStampImage(stampData.data.stamp.stamp_url);
+    };
+
+    useEffect(() => {
+        if (formData.cpid) {
+            getStampImage(formData.cpid);
+        }
+    }, [formData.cpid]);
 
     const handleSubmit = async () => {
         const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
         const webhookBody = {
             embeds: [{
-                title: 'New Stamp Art Submission',
+                title: '🐸  New Stamp Art Submission',
                 fields: [
                     { name: 'Artist Name', value: formData.artist },
-                    { name: 'Telegram/Twitter Username', value: formData.contact },
+                    { name: 'Telegram/Twitter/Discord Username', value: formData.contact },
                     { name: 'Asset Name', value: formData.cpid }
                 ],
                 image: {
-                    url: 'https://i.pinimg.com/originals/97/69/10/976910c6d51c3cab7eb7aad4f2f610fe.gif'
+                    url: stampImage
                 }
             }]
         };
-
 
         try {
             if (!webhookUrl) {
@@ -75,7 +88,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
             console.error('Error submitting the form:', error);
             alert('There was an error submitting the form. Please try again later.');
         }
-    }
+    };
 
     return (
         <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -99,8 +112,8 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                 <ModalBody>
                     <VStack spacing={4}>
                         <Image
-                            src="https://i.pinimg.com/originals/97/69/10/976910c6d51c3cab7eb7aad4f2f610fe.gif"
-                            alt="skateboard"
+                            src={stampImage || "https://i.pinimg.com/originals/97/69/10/976910c6d51c3cab7eb7aad4f2f610fe.gif"}
+                            alt="stamp"
                             boxSize={["80px", "160px"]}
                         />
                         <FormControl>
@@ -117,7 +130,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             </InputGroup>
                         </FormControl>
                         <FormControl>
-                            <FormLabel color="white">Telegram/Twitter Username</FormLabel>
+                            <FormLabel color="white">Discord/Telegram/Twitter Username</FormLabel>
                             <InputGroup>
                                 <InputLeftElement pointerEvents="none" color="gray.400">
                                     @
@@ -168,6 +181,6 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
             </ModalContent>
         </Modal>
     );
-}
+};
 
 export default SubmitFormModal;
