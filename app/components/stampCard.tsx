@@ -10,6 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
 import PepeToast from '../utils/pepeToast';
+import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from '../utils/stampIDs';
 import DispenserModal from './dispenserModal';
 
 export interface Dispenser {
@@ -23,6 +24,11 @@ export interface Dispenser {
 interface StampCardProps {
     stampId: string;
 }
+
+const getStampDetails = (stampId: string) => {
+    const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds];
+    return allChapters.find(stamp => stamp.cpid === stampId);
+};
 
 const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const [stampData, setStampData] = useState<StampInfoResponse['data'] | null>(null);
@@ -38,6 +44,8 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         threshold: 0.1,
         triggerOnce: true
     });
+
+    const stampDetails = getStampDetails(stampId);
 
     useEffect(() => {
         if (inView) {
@@ -65,7 +73,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const handleCopyAddress = (address: string) => {
         navigator.clipboard.writeText(address);
         toast({
-            render: () => <PepeToast title="Address copied." description="The wallet address has been copied to your clipboard." />,
+            render: () => <PepeToast title="Pepe Says" description="Sucessfully copied, bro" />,
             duration: 3000,
             isClosable: true,
             position: 'top-right',
@@ -91,10 +99,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
                 <Card
                     bg={"black"}
-                    border={"2px solid white "}
+                    border={"2px solid white"}
                     size="sm"
                     color={"white"}
-                    boxShadow="none"
+                    boxShadow="inset 0 0 30px #333, inset 10px 0 40px black, inset -10px 0 40px #003366, inset 10px 0 150px black, inset -10px 0 150px green, 0 0 30px #333, -5px 0 1000px orange, 5px 0 40px #004d00"
                     p={2}
                     borderRadius="20px"
                     width="310px"
@@ -104,7 +112,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     <CardHeader borderBottom={"1px solid white"} borderTopRadius="10px" textAlign="center" bg="orange.300" p={2}>
                         <HStack justify={"center"}>
                             <Image src='walletIcon.webp' alt="Logo" boxSize="20px" />
-                            <Text fontWeight={"bold"} fontSize={"24px"} color="black">Chapter X</Text>
+                            <Text fontWeight={"bold"} fontSize={"18px"} color="black">Chapter {stampDetails?.chapter} - Page {stampDetails?.page} </Text>
                         </HStack>
                     </CardHeader>
                     <Box borderRadius="10px" p={4}>
@@ -135,9 +143,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                 <CardFooter mb={-5}>
                                     <VStack m={0} w={"100%"} >
                                         <Box borderWidth="1px" borderRadius="10px" p={3}>
-                                            <Text color={"white"} fontSize="md"> {stampData.stamp.cpid}</Text>
+                                            <Text color={"white"} fontSize="md"><strong>Artist: </strong> {stampDetails?.artist}</Text>
                                             <Text color={"white"} fontSize="md"><strong>Block Index:</strong> {stampData.stamp.block_index}</Text>
                                             <Text color={"white"} fontSize="md"><strong>BlockTime:</strong> {formatDate(stampData.stamp.block_time)}</Text>
+                                            <Text cursor={"pointer"} onClick={() => handleCopyAddress(stampData.stamp.cpid)} color={"white"} fontSize="md"> {stampData.stamp.cpid}</Text>
                                         </Box>
                                         <Button
                                             leftIcon={<FaBitcoin size={"22px"} />}
@@ -162,7 +171,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     border={"2px solid white"}
                     size="sm"
                     color={"white"}
-                    boxShadow="none"
+                    boxShadow="inset 0 0 30px #333, inset 10px 0 40px black, inset -10px 0 40px #003366, inset 10px 0 150px black, inset -10px 0 150px green, 0 0 30px #333, -5px 0 1000px orange, 5px 0 40px #004d00"
                     p={2}
                     borderRadius="20px"
                     width="310px"
@@ -267,7 +276,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     </CardFooter>
                 </Card>
             </ReactCardFlip>
-        </Flex>
+        </Flex >
     );
 }
 

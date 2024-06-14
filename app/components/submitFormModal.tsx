@@ -110,7 +110,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                     render: () => <PepeToast title="Success" description='Form submitted successfully!' />,
                     duration: 3000,
                     isClosable: true,
-                    position: 'top-right',
+                    position: 'top',
                 });
                 setFormData({ artist: "", contact: "", cpid: "" }); // Reset the form
                 onClose(); // Close the modal
@@ -119,7 +119,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                     render: () => <PepeToast title="Error" description='There was an error submitting the form. Please try again later.' />,
                     duration: 3000,
                     isClosable: true,
-                    position: 'top-right',
+                    position: 'top',
                 });
             }
         } catch (error) {

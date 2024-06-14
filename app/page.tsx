@@ -8,28 +8,28 @@ import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from './utils/st
 
 const HomePage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentStampIds, setCurrentStampIds] = useState<string[]>(chapter1StampIds);
+  const [currentStampIds, setCurrentStampIds] = useState(chapter1StampIds.map(item => item.cpid));
   const [currentChapter, setCurrentChapter] = useState(1);
   const chaptersList = [
     {
       id: 1,
       title: "Chapter 1",
       description: "Chapter 1 Description",
-      stampIds: chapter1StampIds,
+      stampIds: chapter1StampIds.map(item => item.cpid),
       image: "https://via.placeholder.com/150",
     },
     {
       id: 2,
       title: "Chapter 2",
       description: "Chapter 2 Description",
-      stampIds: chapter2StampIds,
+      stampIds: chapter2StampIds.map(item => item.cpid),
       image: "https://via.placeholder.com/150",
     },
     {
       id: 3,
       title: "Chapter 3",
       description: "Chapter 3 Description",
-      stampIds: chapter3StampIds,
+      stampIds: chapter3StampIds.map(item => item.cpid),
       image: "https://via.placeholder.com/150",
     },
   ];
