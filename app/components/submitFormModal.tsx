@@ -11,10 +11,12 @@ import {
     ModalFooter,
     ModalHeader, ModalOverlay,
     Text,
-    VStack
+    VStack,
+    useToast
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import getStampData from '../utils/getStampInfo';
+import PepeToast from '../utils/pepeToast';
 
 interface SubmitFormModalProps {
     isOpen: boolean;
@@ -29,6 +31,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
     });
 
     const [stampImage, setStampImage] = useState<string>("");
+    const toast = useToast();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
         setFormData({
@@ -48,7 +51,32 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
         }
     }, [formData.cpid]);
 
+    const validateCpid = (cpid: string): boolean => {
+        const cpidRegex = /^A\d{19}$/;
+        return cpidRegex.test(cpid);
+    };
+
     const handleSubmit = async () => {
+        if (!formData.artist || !formData.contact || !formData.cpid) {
+            toast({
+                render: () => <PepeToast title="Error" description="All fields must be filled." />,
+                duration: 3000,
+                isClosable: true,
+                position: 'top',
+            });
+            return;
+        }
+
+        if (!validateCpid(formData.cpid)) {
+            toast({
+                render: () => <PepeToast title="Error" description='Asset Name must start with "A" followed by 19 digits.' />,
+                duration: 3000,
+                isClosable: true,
+                position: 'top',
+            });
+            return;
+        }
+
         const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
         const webhookBody = {
@@ -78,15 +106,30 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
             });
 
             if (response.ok) {
-                alert('Form submitted successfully!');
+                toast({
+                    render: () => <PepeToast title="Success" description='Form submitted successfully!' />,
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'top-right',
+                });
                 setFormData({ artist: "", contact: "", cpid: "" }); // Reset the form
                 onClose(); // Close the modal
             } else {
-                alert('There was an error submitting the form. Please try again later.');
+                toast({
+                    render: () => <PepeToast title="Error" description='There was an error submitting the form. Please try again later.' />,
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'top-right',
+                });
             }
         } catch (error) {
             console.error('Error submitting the form:', error);
-            alert('There was an error submitting the form. Please try again later.');
+            toast({
+                render: () => <PepeToast title="Error" description='There was an error submitting the form. Please try again later.' />,
+                duration: 3000,
+                isClosable: true,
+                position: 'top-right',
+            });
         }
     };
 

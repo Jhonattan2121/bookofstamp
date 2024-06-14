@@ -1,3 +1,5 @@
+// components/StampCard.tsx
+
 'use client';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
@@ -7,6 +9,7 @@ import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
 import { useInView } from 'react-intersection-observer';
 import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
+import PepeToast from '../utils/pepeToast';
 import DispenserModal from './dispenserModal';
 
 export interface Dispenser {
@@ -59,29 +62,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         }
     }, [stampData]);
 
-    const CustomToast = ({ title, description }: { title: string, description: string }) => (
-        <Box
-            bg="black"
-            color="orange"
-            border="1px solid orange"
-            borderRadius="10px"
-            p={4}
-            shadow="md"
-        >
-            <HStack>
-                <Image src='https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif' alt="Logo" boxSize="30px" />
-                <Box>
-                    <Text fontWeight="bold">{title}</Text>
-                    <Text>{description}</Text>
-                </Box>
-            </HStack>
-        </Box>
-    );
-
     const handleCopyAddress = (address: string) => {
         navigator.clipboard.writeText(address);
         toast({
-            render: () => <CustomToast title="Address copied." description="The wallet address has been copied to your clipboard." />,
+            render: () => <PepeToast title="Address copied." description="The wallet address has been copied to your clipboard." />,
             duration: 3000,
             isClosable: true,
             position: 'top-right',
@@ -97,6 +81,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
         return d.toLocaleDateString(undefined, options);
     }
+
 
     return (
         <Flex ref={ref} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
