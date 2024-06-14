@@ -91,6 +91,8 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     }
 
 
+
+
     return (
         <Flex ref={ref} justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
             {isDispenserOpen &&
@@ -128,6 +130,10 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                         borderRadius="10px"
                                         borderWidth="2px"
                                         borderColor="yellow"
+                                        style={{
+                                            imageRendering: 'pixelated',
+                                        }}
+
                                     />
                                 )}
                             </Center>
