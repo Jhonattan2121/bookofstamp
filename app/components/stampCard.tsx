@@ -104,7 +104,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     border={"2px solid white"}
                     size="sm"
                     color={"white"}
-                    boxShadow="inset 0 0 30px #333, inset 10px 0 40px black, inset -10px 0 40px #003366, inset 10px 0 150px black, inset -10px 0 150px green, 0 0 30px #333, -5px 0 1000px orange, 5px 0 40px #004d00"
+                    boxShadow="inset 0 0 30px #333, inset 10px 0 40px black, inset -10px 0 40px #003366, inset 10px 0 150px black, inset -10px 0 150px green, 0 0 30px #333, -5px 0 300px orange, 5px 0 40px #004d00"
                     p={2}
                     borderRadius="20px"
                     width="310px"
@@ -123,18 +123,26 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                 {loading ? (
                                     <Skeleton boxSize={["200px", "220px"]} borderRadius="10px" />
                                 ) : (
-                                    <Image
-                                        src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
-                                        alt={'stamp'}
-                                        boxSize="240px"
-                                        borderRadius="10px"
-                                        borderWidth="2px"
-                                        borderColor="yellow"
-                                        style={{
-                                            imageRendering: 'pixelated',
-                                        }}
+                                    <Box
+                                        aspectRatio={1}
+                                    >
+                                        <Image
+                                            src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
+                                            alt={'stamp'}
+                                            boxSize="240px"
+                                            borderRadius="10px"
+                                            borderWidth="2px"
+                                            objectFit={"contain"}
+                                            borderColor="yellow"
+                                            // height={"100%"}
+                                            // width={"auto"}
+                                            style={{
+                                                imageRendering: 'pixelated',
+                                            }}
 
-                                    />
+                                        />
+                                    </Box>
+
                                 )}
                             </Center>
                         </CardBody>
@@ -150,8 +158,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                     <VStack m={0} w={"100%"} >
                                         <Box borderWidth="1px" borderRadius="10px" p={3}>
                                             <Text color={"white"} fontSize="md"><strong>Artist: </strong> {stampDetails?.artist}</Text>
-                                            <Text color={"white"} fontSize="md"><strong>Block Index:</strong> {stampData.stamp.block_index}</Text>
-                                            <Text color={"white"} fontSize="md"><strong>BlockTime:</strong> {formatDate(stampData.stamp.block_time)}</Text>
                                             <Text cursor={"pointer"} onClick={() => handleCopyAddress(stampData.stamp.cpid)} color={"white"} fontSize="md"> {stampData.stamp.cpid}</Text>
                                         </Box>
                                         <Button

@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import { useState } from 'react';
 import StampGrid from './components/StampGrid';
 import SubmitFormModal from './components/submitFormModal';
-import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from './utils/stampIDs';
+import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from './utils/stampIDs';
 
 const HomePage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,6 +30,13 @@ const HomePage: NextPage = () => {
       title: "Chapter 3",
       description: "Chapter 3 Description",
       stampIds: chapter3StampIds.map(item => item.cpid),
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 4,
+      title: "Chapter 4",
+      description: "Chapter 4 Description",
+      stampIds: chapter4StampIds.map(item => item.cpid),
       image: "https://via.placeholder.com/150",
     },
   ];
