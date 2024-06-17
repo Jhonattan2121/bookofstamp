@@ -103,7 +103,6 @@ export const chapter2StampIds = [
   { cpid: "A192011316192510000", page: 43, artist: "Pifu", chapter: 2 },
 ];
 
-
 export const chapter3StampIds = [
   { cpid: "A8078188082000998834", page: 1, artist: "RareStamp", chapter: 3 },
   { cpid: "A12365209810981428317", page: 2, artist: "Lu Ambriz", chapter: 3 },
