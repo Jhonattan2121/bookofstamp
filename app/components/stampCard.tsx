@@ -330,7 +330,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                 <HStack>
 
                                                     <Badge bg={"orange.200"} color={"black"} className='btc-price'><Text fontSize={"18px"}> {selectedDispenser.btcrate} BTC</Text></Badge> <Text>-</Text>
-                                                    <Text>  {selectedDispenser.give_remaining}/{selectedDispenser.escrow_quantity}left</Text>
+                                                    <Text>  {selectedDispenser.give_remaining}/{selectedDispenser.escrow_quantity} left</Text>
                                                 </HStack>
 
                                             </VStack>

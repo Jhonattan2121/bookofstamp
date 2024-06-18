@@ -146,8 +146,8 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
             >
                 <ModalHeader>
                     <Center>
-                        <Text fontSize="xl" fontWeight="bold" color="white">
-                            Submit Stamp Art
+                        <Text mt={2} fontSize="lg" fontWeight="bold" color="white">
+                            Submit Stamp - Chapter 5
                         </Text>
                     </Center>
                     <ModalCloseButton />
@@ -173,7 +173,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             </InputGroup>
                         </FormControl>
                         <FormControl>
-                            <FormLabel color="white">Discord/Telegram/Twitter Username</FormLabel>
+                            <FormLabel color="white">Discord/Telegram/Twitter </FormLabel>
                             <InputGroup>
                                 <InputLeftElement pointerEvents="none" color="gray.400">
                                     @
