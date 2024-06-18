@@ -43,6 +43,8 @@ const HomePage: NextPage = () => {
   ];
 
   const handleChapterClick = (stamps: string[]) => {
+    console.log('Selected Chapter:', currentChapter); // Debug statement
+    console.log('Stamp IDs:', stamps); // Debug statement
     setCurrentStampIds(stamps);
   };
 

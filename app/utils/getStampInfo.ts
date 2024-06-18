@@ -20,11 +20,15 @@ interface Holder {
 }
 
 export interface Dispenser {
-    tx_hash: string;
     block_index: number;
+    btcrate: number;
     source: string;
     cpid: string;
     give_quantity: number;
+    escrow_quantity: number;
+    satoshirate: number;
+    give_remaining: number;
+    tx_hash: string;
 }
 
 export interface Dispense {
@@ -84,3 +88,4 @@ const getStampData = async (stampId: string): Promise<StampInfoResponse> => {
 }
 
 export default getStampData;
+

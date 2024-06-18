@@ -32,7 +32,6 @@ export const chapter1StampIds = [
   { cpid: "A8080808080808080800", page: 31, artist: "Regan", chapter: 1 },
   { cpid: "A192011316192510000", page: 32, artist: "Bbleiztz", chapter: 1 },
   { cpid: "A808022222222222222", page: 33, artist: "Regan & B0b", chapter: 1 },
-  { cpid: "A8078188082000998834", page: 34, artist: "RareStamp", chapter: 1 },
   { cpid: "A12365209810981428317", page: 35, artist: "Lu Ambriz", chapter: 1 },
   { cpid: "A10832907201819087000", page: 36, artist: "Harvey Vogelmann", chapter: 1 },
   { cpid: "A5968356289406155902", page: 37, artist: "HNFT Pepe", chapter: 1 },

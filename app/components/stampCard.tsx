@@ -1,23 +1,14 @@
-// components/StampCard.tsx
-
 'use client';
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
+import { Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
 import QRCode from 'qrcode.react';
 import { useEffect, useRef, useState } from 'react';
 import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
+import '../styles.css';
 import formatBTCaddress from '../utils/formatBTCaddress';
-import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
+import getStampData, { Dispenser, StampInfoResponse } from '../utils/getStampInfo';
 import PepeToast from '../utils/pepeToast';
 import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from '../utils/stampIDs';
 import DispenserModal from './dispenserModal';
-
-export interface Dispenser {
-    tx_hash: string;
-    block_index: number;
-    source: string;
-    cpid: string;
-    give_quantity: number;
-}
 
 interface StampCardProps {
     stampId: string;
@@ -48,7 +39,21 @@ const useIntersectionObserver = (options: IntersectionObserverInit) => {
 
 const getStampDetails = (stampId: string) => {
     const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds, ...chapter4StampIds];
-    return allChapters.find(stamp => stamp.cpid === stampId);
+    const stampDetails = allChapters.find(stamp => stamp.cpid === stampId);
+
+    if (!stampDetails) {
+        console.error(`No stamp details found for stampId: ${stampId}`);
+    } else {
+        console.log(`Stamp details found for stampId: ${stampId}`, stampDetails);
+    }
+
+    // Check for duplicates
+    const duplicates = allChapters.filter(stamp => stamp.cpid === stampId);
+    if (duplicates.length > 1) {
+        console.warn(`Duplicate cpid found for stampId: ${stampId}`, duplicates);
+    }
+
+    return stampDetails;
 };
 
 const flipCardStyles = {
@@ -97,6 +102,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     });
 
     const stampDetails = getStampDetails(stampId);
+    console.log('Stamp Details:', stampDetails); // Debug statement
 
     useEffect(() => {
         const fetchData = async () => {
@@ -110,13 +116,13 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             }
         };
         fetchData();
-    }
-        , [stampId]);
+    }, [stampId]);
 
     useEffect(() => {
         if (stampData?.dispensers && stampData.dispensers.length > 0) {
-            setDispensers(stampData.dispensers);
-            setSelectedDispenser(stampData.dispensers[0]);
+            const sortedDispensers = [...stampData.dispensers].sort((a, b) => parseFloat(a.btcrate.toString()) - parseFloat(b.btcrate.toString()));
+            setDispensers(sortedDispensers);
+            setSelectedDispenser(sortedDispensers[0]);
         }
     }, [stampData]);
 
@@ -130,15 +136,22 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         });
     };
 
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        // Check if the click is outside the interactive elements
+        if (!(e.target instanceof HTMLElement)) return;
+        const interactiveElements = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'A'];
+        if (interactiveElements.includes(e.target.tagName)) {
+            return;
+        }
+        console.log(stampData);
+        setIsFlipped(!isFlipped);
+    };
+
     if (error) {
         return <Text>{error}</Text>;
     }
 
-    const formatDate = (date: string) => {
-        const d = new Date(date);
-        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-        return d.toLocaleDateString(undefined, options);
-    }
+
 
     return (
         <Flex justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
@@ -149,7 +162,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                 sx={flipCardStyles}
                 width="310px"
                 height="550px"
-                onClick={() => setIsFlipped(!isFlipped)}
+                onClick={handleClick}
             >
                 <Box
                     sx={{ ...flipCardInnerStyles, ...(isFlipped && flipCardFlippedStyles) }}
@@ -234,7 +247,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                         border={"2px solid white"}
                         size="sm"
                         color={"white"}
-                        // boxShadow="inset 0 0 30px #333, inset 10px 0 40px black, inset -10px 0 40px #003366, inset 10px 0 150px black, inset -10px 0 150px green, 0 0 30px #333, -5px 0 1000px orange, 5px 0 40px #004d00"
                         p={2}
                         borderRadius="20px"
                         width="100%"
@@ -264,7 +276,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                     <>
                                         <Image src="https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif" alt="No Dispensers" />
                                         <Text fontSize="md" color="white">
-                                            No dispensers available
+                                            No dispensers available, or may be its loading...
                                         </Text>
                                     </>
                                 ) : (
@@ -318,6 +330,12 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                 <Box border={'1px solid orange'} borderRadius="10px" p="10px">
                                                     <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
                                                 </Box>
+                                                <HStack>
+
+                                                    <Badge bg={"orange.200"} color={"black"} className='btc-price'><Text fontSize={"18px"}> {selectedDispenser.btcrate} BTC</Text></Badge> <Text>-</Text>
+                                                    <Text>  {selectedDispenser.give_remaining}/{selectedDispenser.escrow_quantity}left</Text>
+                                                </HStack>
+
                                             </VStack>
                                         )}
                                     </>
