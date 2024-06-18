@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import { Share_Tech_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
 import Providers from './providers';
-
 const share_tech_mono = Share_Tech_Mono({ subsets: ['latin'], weight: '400' });
 const ColorModeScriptWrapper = dynamic(() => import('./ColorModeScriptWrapper'), { ssr: false });
 
@@ -45,6 +44,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body className={share_tech_mono.className}>
+        {/* <Cursor /> */}
         <ColorModeScriptWrapper />
         <Providers>{children}</Providers>
       </body>

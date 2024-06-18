@@ -52,7 +52,7 @@ const HomePage: NextPage = () => {
         <Center>
           <SubmitFormModal isOpen={isOpen} onClose={onClose} />
           <HStack>
-            <Image mb={-3} boxSize="100px" src="AZlogo.webp" alt="Logo" className="navbar-logo" />
+            <Image mb={-3} width="100px" height="auto" src="AZlogo.webp" alt="Logo" className="navbar-logo" />
             <VStack>
               <Menu>
                 <Button

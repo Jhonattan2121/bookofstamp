@@ -8,7 +8,7 @@ import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
 import formatBTCaddress from '../utils/formatBTCaddress';
 import getStampData, { StampInfoResponse } from '../utils/getStampInfo';
 import PepeToast from '../utils/pepeToast';
-import { chapter1StampIds, chapter2StampIds, chapter3StampIds } from '../utils/stampIDs';
+import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from '../utils/stampIDs';
 import DispenserModal from './dispenserModal';
 
 export interface Dispenser {
@@ -47,7 +47,7 @@ const useIntersectionObserver = (options: IntersectionObserverInit) => {
 };
 
 const getStampDetails = (stampId: string) => {
-    const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds];
+    const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds, ...chapter4StampIds];
     return allChapters.find(stamp => stamp.cpid === stampId);
 };
 
@@ -259,7 +259,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                             height="100%"
                             borderRadius="20px"
                         >
-                            <VStack spacing={1} mt="30px"  >
+                            <VStack zIndex={9999} spacing={1} mt="30px"  >
                                 {dispensers.length === 0 ? (
                                     <>
                                         <Image src="https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif" alt="No Dispensers" />
