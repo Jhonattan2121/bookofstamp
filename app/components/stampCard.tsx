@@ -41,11 +41,6 @@ const getStampDetails = (stampId: string) => {
     const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds, ...chapter4StampIds];
     const stampDetails = allChapters.find(stamp => stamp.cpid === stampId);
 
-    if (!stampDetails) {
-        console.error(`No stamp details found for stampId: ${stampId}`);
-    } else {
-        console.log(`Stamp details found for stampId: ${stampId}`, stampDetails);
-    }
 
     // Check for duplicates
     const duplicates = allChapters.filter(stamp => stamp.cpid === stampId);
@@ -102,7 +97,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     });
 
     const stampDetails = getStampDetails(stampId);
-    console.log('Stamp Details:', stampDetails); // Debug statement
 
     useEffect(() => {
         const fetchData = async () => {
@@ -143,7 +137,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         if (interactiveElements.includes(e.target.tagName)) {
             return;
         }
-        console.log(stampData);
         setIsFlipped(!isFlipped);
     };
 
@@ -303,6 +296,9 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                 borderRadius="10px"
                                                 color="white"
                                                 w="100%"
+                                                position="absolute"
+                                                left="50%"
+                                                transform="translateX(-50%)"
                                             >
                                                 {dispensers.map((dispenser, index) => (
                                                     <MenuItem
@@ -313,11 +309,12 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                         cursor="pointer"
                                                         p="2"
                                                     >
-                                                        {formatBTCaddress(dispenser.source)}
+                                                        {formatBTCaddress(dispenser.source) + ' - ' + dispenser.btcrate + ' BTC'}
                                                     </MenuItem>
                                                 ))}
                                             </MenuList>
                                         </Menu>
+
 
                                         {selectedDispenser && dispensers.length > 0 && (
                                             <VStack mt={4}>
