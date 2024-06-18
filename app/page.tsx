@@ -4,6 +4,7 @@ import { NextPage } from 'next';
 import { useState } from 'react';
 import StampGrid from './components/StampGrid';
 import SubmitFormModal from './components/submitFormModal';
+import './styles.css'; // Import the CSS file
 import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from './utils/stampIDs';
 
 const HomePage: NextPage = () => {
@@ -58,28 +59,21 @@ const HomePage: NextPage = () => {
                   onClick={onOpen}
                   variant={'outline'}
                   colorScheme='yellow'
-                  _hover={{ transform: "scale(1.05)" }}
-                  h={'auto'}
-                  p={4}
-                  w={'90%'}
-                  fontSize={'20px'}
-                  ml={"5"}
+                  className="button-submit-art fade-in"
                 >
                   Submit Art
                 </Button>
-                <MenuButton ml={"5"} w={'90%'} as={Button} colorScheme="yellow" variant="outline">
+                <MenuButton className="button-chapter fade-in" as={Button} colorScheme="yellow" variant="outline">
                   Chapter {currentChapter}
                 </MenuButton>
-                <MenuList zIndex={2} bg="orange.200">
+                <MenuList zIndex={2} className="menu-list">
                   {chaptersList.map((chapter) => (
                     <MenuItem
                       onClick={() => {
                         handleChapterClick(chapter.stampIds);
                         setCurrentChapter(chapter.id);
                       }}
-                      _hover={{ bg: 'black', color: 'orange.200' }}
-                      bg="orange.200"
-                      color={"black"}
+                      className="menu-item"
                       key={chapter.id}
                     >
                       {chapter.title}

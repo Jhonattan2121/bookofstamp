@@ -1,5 +1,6 @@
 .cursor {
+  position: absolute;
+  will-change: transform;
   pointer-events: none;
   z-index: 9999;
-  position: absolute;
 }

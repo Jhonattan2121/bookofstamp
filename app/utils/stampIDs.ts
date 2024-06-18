@@ -56,7 +56,6 @@ export const chapter1StampIds = [
 ];
 
 
-
 export const chapter2StampIds = [
   { cpid: "A1350331380742150189", page: 1, artist: "bblieztz", chapter: 2 },
   { cpid: "A1449397849937177992", page: 2, artist: "Jamex", chapter: 2 },

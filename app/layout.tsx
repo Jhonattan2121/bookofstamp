@@ -1,13 +1,16 @@
+import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+import { Share_Tech_Mono } from 'next/font/google';
+import { ReactNode } from 'react';
+import Providers from './providers';
 
-import { ColorModeScript } from "@chakra-ui/react";
-import type { Metadata } from "next";
-import { Share_Tech_Mono } from "next/font/google";
-import Providers from "./providers";
-const share_tech_mono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
+const share_tech_mono = Share_Tech_Mono({ subsets: ['latin'], weight: '400' });
+const ColorModeScriptWrapper = dynamic(() => import('./ColorModeScriptWrapper'), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "Book of Stamp",
-  description: "The Book of Stamp",
+  metadataBase: new URL('https://www.bookofstamp.com'),
+  title: 'Book of Stamp',
+  description: 'The Book of Stamp',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -30,26 +33,23 @@ export const metadata: Metadata = {
     creator: '@bookofstamp',
     title: 'Book of Stamp',
     description: 'The Book of Stamp',
-    images: ['/AZlogo.webp'],
+    images: '/AZlogo.webp',
   },
 };
 
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
-      <body className={share_tech_mono.className} >
-        <ColorModeScript initialColorMode="dark" />
-        <Providers>
-          {/* <Navbar /> */}
-          {children}
-        </Providers>
+      <body className={share_tech_mono.className}>
+        <ColorModeScriptWrapper />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
