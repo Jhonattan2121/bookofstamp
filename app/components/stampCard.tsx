@@ -1,14 +1,33 @@
-'use client';
-import { Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Flex, HStack, Image, Menu, MenuButton, MenuItem, MenuList, Skeleton, SkeletonText, Text, VStack, useToast } from '@chakra-ui/react';
-import QRCode from 'qrcode.react';
-import { useEffect, useRef, useState } from 'react';
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Center,
+    Flex,
+    HStack,
+    Image,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Skeleton,
+    SkeletonText,
+    Text,
+    VStack,
+    useToast,
+} from "@chakra-ui/react";
+import QRCode from "qrcode.react";
+import { useEffect, useRef, useState } from "react";
 import { FaArrowDown, FaBitcoin, FaCopy } from "react-icons/fa";
-import '../styles.css';
-import formatBTCaddress from '../utils/formatBTCaddress';
-import getStampData, { Dispenser, StampInfoResponse } from '../utils/getStampInfo';
-import PepeToast from '../utils/pepeToast';
-import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from '../utils/stampIDs';
-import DispenserModal from './dispenserModal';
+import formatBTCaddress from "../utils/formatBTCaddress";
+import getStampData, { Dispenser, StampInfoResponse } from "../utils/getStampInfo";
+import PepeToast from "../utils/pepeToast";
+import { chapter1StampIds, chapter2StampIds, chapter3StampIds, chapter4StampIds } from "../utils/stampIDs";
+import DispenserModal from "./dispenserModal";
 
 interface StampCardProps {
     stampId: string;
@@ -37,13 +56,15 @@ const useIntersectionObserver = (options: IntersectionObserverInit) => {
     return { ref, isInView };
 };
 
+const convertBase64ToImage = (base64: string, mimeType: string) => {
+    return `data:${mimeType};base64,${base64}`;
+};
 const getStampDetails = (stampId: string) => {
     const allChapters = [...chapter1StampIds, ...chapter2StampIds, ...chapter3StampIds, ...chapter4StampIds];
-    const stampDetails = allChapters.find(stamp => stamp.cpid === stampId);
-
+    const stampDetails = allChapters.find((stamp) => stamp.cpid === stampId);
 
     // Check for duplicates
-    const duplicates = allChapters.filter(stamp => stamp.cpid === stampId);
+    const duplicates = allChapters.filter((stamp) => stamp.cpid === stampId);
     if (duplicates.length > 1) {
         console.warn(`Duplicate cpid found for stampId: ${stampId}`, duplicates);
     }
@@ -52,37 +73,37 @@ const getStampDetails = (stampId: string) => {
 };
 
 const flipCardStyles = {
-    perspective: '1000px',
+    perspective: "1000px",
 };
 
 const flipCardInnerStyles = {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
-    transition: 'transform 0.6s',
-    transformStyle: 'preserve-3d',
-    willChange: 'transform',
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    textAlign: "center",
+    transition: "transform 0.6s",
+    transformStyle: "preserve-3d",
+    willChange: "transform",
 };
 
 const flipCardFlippedStyles = {
-    transform: 'rotateY(180deg)',
+    transform: "rotateY(180deg)",
 };
 
 const flipCardSideStyles = {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backfaceVisibility: 'hidden',
-    willChange: 'transform',
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backfaceVisibility: "hidden",
+    willChange: "transform",
 };
 
 const flipCardBackStyles = {
-    transform: 'rotateY(180deg)',
+    transform: "rotateY(180deg)",
 };
 
 const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
-    const [stampData, setStampData] = useState<StampInfoResponse['data'] | null>(null);
+    const [stampData, setStampData] = useState<StampInfoResponse["data"] | null>(null);
     const [isDispenserOpen, setIsDispenserOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -93,7 +114,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
 
     const { ref, isInView } = useIntersectionObserver({
         threshold: 0.1,
-        rootMargin: '0px',
+        rootMargin: "0px",
     });
 
     const stampDetails = getStampDetails(stampId);
@@ -104,7 +125,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                 const data = await getStampData(stampId);
                 setStampData(data.data);
             } catch (err) {
-                setError('Failed to fetch stamp information.');
+                setError("Failed to fetch stamp information.");
             } finally {
                 setLoading(false);
             }
@@ -123,17 +144,17 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
     const handleCopyAddress = (address: string) => {
         navigator.clipboard.writeText(address);
         toast({
-            render: () => <PepeToast title="Pepe Says" description="Sucessfully copied, bro" />,
+            render: () => <PepeToast title="Pepe Says" description="Successfully copied, bro" />,
             duration: 3000,
             isClosable: true,
-            position: 'top-right',
+            position: "top-right",
         });
     };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         // Check if the click is outside the interactive elements
         if (!(e.target instanceof HTMLElement)) return;
-        const interactiveElements = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'A'];
+        const interactiveElements = ["BUTTON", "INPUT", "SELECT", "TEXTAREA", "A"];
         if (interactiveElements.includes(e.target.tagName)) {
             return;
         }
@@ -144,22 +165,84 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
         return <Text>{error}</Text>;
     }
 
+    const renderStampContent = () => {
+        if (loading) {
+            return <Skeleton boxSize={["200px", "220px"]} borderRadius="10px" />;
+        } else if (stampData?.stamp.stamp_mimetype === "text/html") {
+            const htmlContent = atob(stampData.stamp.stamp_base64);
+            const styleContent = `
+                <style>
+                    body {
+                        margin: 0;
+                        overflow: hidden;
+                    }
+                </style>
+            `;
+            const combinedContent = styleContent + htmlContent;
+            return (
+                <Box
+                    width="240px"
+                    height="240px"
+                    borderRadius="10px"
+                    borderWidth="2px"
+                    borderColor="yellow"
+                    style={{
+                        overflow: "hidden",
+                    }}
+                >
+                    <iframe
+                        srcDoc={combinedContent}
+                        width="100%"
+                        height="100%"
+                        style={{
+                            border: "none",
+                            borderRadius: "10px",
+                            cursor: "default",
+                            overflow: "hidden",
+                        }}
+                    ></iframe>
+                </Box>
+            );
+        } else if (stampData?.stamp.stamp_mimetype.startsWith("image/")) {
+            const imageUrl = convertBase64ToImage(stampData.stamp.stamp_base64, stampData.stamp.stamp_mimetype);
+            return (
+                <Image
+                    src={imageUrl}
+                    alt={"stamp"}
+                    boxSize="240px"
+                    borderRadius="10px"
+                    borderWidth="2px"
+                    objectFit={"contain"}
+                    borderColor="yellow"
+                    style={{
+                        imageRendering: "pixelated",
+                    }}
+                />
+            );
+        } else {
+            return (
+                <Image
+                    src={stampData?.stamp.stamp_url || "AZlogo.webp"}
+                    alt={"stamp"}
+                    boxSize="240px"
+                    borderRadius="10px"
+                    borderWidth="2px"
+                    objectFit={"contain"}
+                    borderColor="yellow"
+                    style={{
+                        imageRendering: "pixelated",
+                    }}
+                />
+            );
+        }
+    };
 
 
     return (
         <Flex justify="center" width="100%" height="100%" p={[2, 4]} marginTop="80px">
-            {isDispenserOpen &&
-                <DispenserModal stampData={stampData} isOpen={isDispenserOpen} onClose={() => setIsDispenserOpen(false)} />
-            }
-            <Box
-                sx={flipCardStyles}
-                width="310px"
-                height="550px"
-                onClick={handleClick}
-            >
-                <Box
-                    sx={{ ...flipCardInnerStyles, ...(isFlipped && flipCardFlippedStyles) }}
-                >
+            {isDispenserOpen && <DispenserModal stampData={stampData} isOpen={isDispenserOpen} onClose={() => setIsDispenserOpen(false)} />}
+            <Box sx={flipCardStyles} width="310px" height="550px" onClick={handleClick}>
+                <Box sx={{ ...flipCardInnerStyles, ...(isFlipped && flipCardFlippedStyles) }}>
                     <Card
                         sx={flipCardSideStyles}
                         bg={"black"}
@@ -174,34 +257,15 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                     >
                         <CardHeader borderBottom={"1px solid white"} borderTopRadius="10px" textAlign="center" bg="orange.300" p={2}>
                             <HStack justify={"center"}>
-                                <Image src='walletIcon.webp' alt="Logo" boxSize="20px" />
-                                <Text fontWeight={"bold"} fontSize={"18px"} color="black">Chapter {stampDetails?.chapter} - Page {stampDetails?.page} </Text>
+                                <Image src="walletIcon.webp" alt="Logo" boxSize="20px" />
+                                <Text fontWeight={"bold"} fontSize={"18px"} color="black">
+                                    Chapter {stampDetails?.chapter} - Page {stampDetails?.page}{" "}
+                                </Text>
                             </HStack>
                         </CardHeader>
                         <Box borderRadius="10px" p={4}>
                             <CardBody bg={"transparent"}>
-                                <Center>
-                                    {loading ? (
-                                        <Skeleton boxSize={["200px", "220px"]} borderRadius="10px" />
-                                    ) : (
-                                        <Box
-                                            aspectRatio={1}
-                                        >
-                                            <Image
-                                                src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
-                                                alt={'stamp'}
-                                                boxSize="240px"
-                                                borderRadius="10px"
-                                                borderWidth="2px"
-                                                objectFit={"contain"}
-                                                borderColor="yellow"
-                                                style={{
-                                                    imageRendering: 'pixelated',
-                                                }}
-                                            />
-                                        </Box>
-                                    )}
-                                </Center>
+                                <Center>{renderStampContent()}</Center>
                             </CardBody>
                             {loading ? (
                                 <Box mt={4} p={3} height="145px">
@@ -212,18 +276,23 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                             ) : (
                                 stampData && (
                                     <CardFooter mb={-5}>
-                                        <VStack m={0} w={"100%"} >
+                                        <VStack m={0} w={"100%"}>
                                             <Box borderWidth="1px" borderRadius="10px" p={3}>
-                                                <Text color={"white"} fontSize="md"><strong>Artist: </strong> {stampDetails?.artist}</Text>
-                                                <Text cursor={"pointer"} onClick={() => handleCopyAddress(stampData.stamp.cpid)} color={"white"} fontSize="md"> {stampData.stamp.cpid}</Text>
+                                                <Text color={"white"} fontSize="md">
+                                                    <strong>Artist: </strong> {stampDetails?.artist}
+                                                </Text>
+                                                <Text cursor={"pointer"} onClick={() => handleCopyAddress(stampData.stamp.cpid)} color={"white"} fontSize="md">
+                                                    {" "}
+                                                    {stampData.stamp.cpid}
+                                                </Text>
                                             </Box>
                                             <Button
                                                 leftIcon={<FaBitcoin size={"22px"} />}
                                                 colorScheme="yellow"
                                                 width={"100%"}
                                                 mt={2}
-                                                variant={'outline'}
-                                                w={'auto'}
+                                                variant={"outline"}
+                                                w={"auto"}
                                                 onClick={() => setIsFlipped(true)}
                                             >
                                                 Buy Art
@@ -245,26 +314,16 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                         width="100%"
                         height="100%"
                     >
-                        <CardHeader borderBottom={'1px solid white'} borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
+                        <CardHeader borderBottom={"1px solid white"} borderTopRadius="10px" textAlign="center" bg="gray.900" p={2}>
                             <HStack justify={"center"}>
-                                <Image
-                                    src={stampData?.stamp.stamp_url || 'AZlogo.webp'}
-                                    alt={'stamp'}
-                                    boxSize="20px"
-                                    borderWidth="2px"
-                                    borderColor="yellow"
-                                    position="relative"
-                                />
-                                <Text size="md" color="white">{stampId}</Text>
+                                <Image src={stampData?.stamp.stamp_url || "AZlogo.webp"} alt={"stamp"} boxSize="20px" borderWidth="2px" borderColor="yellow" position="relative" />
+                                <Text size="md" color="white">
+                                    {stampId}
+                                </Text>
                             </HStack>
                         </CardHeader>
-                        <CardBody
-                            textAlign="center"
-                            width="100%"
-                            height="100%"
-                            borderRadius="20px"
-                        >
-                            <VStack zIndex={9999} spacing={1} mt="30px"  >
+                        <CardBody textAlign="center" width="100%" height="100%" borderRadius="20px">
+                            <VStack zIndex={9999} spacing={1} mt="30px">
                                 {dispensers.length === 0 ? (
                                     <>
                                         <Image src="https://i.pinimg.com/originals/f2/69/72/f26972dfbe5f8226b76ac7bca928c82b.gif" alt="No Dispensers" />
@@ -279,15 +338,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                         </Text>
                                         Dispensers available
                                         <Menu>
-                                            <MenuButton
-                                                as={Button}
-                                                rightIcon={<FaArrowDown />}
-                                                variant="outline"
-                                                colorScheme="yellow"
-                                                size="md"
-                                                borderRadius="10px"
-                                                _hover={{ bg: 'orange.300' }}
-                                            >
+                                            <MenuButton as={Button} rightIcon={<FaArrowDown />} variant="outline" colorScheme="yellow" size="md" borderRadius="10px" _hover={{ bg: "orange.300" }}>
                                                 Select Dispenser
                                             </MenuButton>
                                             <MenuList
@@ -304,17 +355,16 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                     <MenuItem
                                                         bg="black"
                                                         key={index}
-                                                        _hover={{ bg: 'orange.300', color: 'black' }}
+                                                        _hover={{ bg: "orange.300", color: "black" }}
                                                         onClick={() => setSelectedDispenser(dispenser)}
                                                         cursor="pointer"
                                                         p="2"
                                                     >
-                                                        {formatBTCaddress(dispenser.source) + ' - ' + dispenser.btcrate + ' BTC'}
+                                                        {formatBTCaddress(dispenser.source) + " - " + dispenser.btcrate + " BTC"}
                                                     </MenuItem>
                                                 ))}
                                             </MenuList>
                                         </Menu>
-
 
                                         {selectedDispenser && dispensers.length > 0 && (
                                             <VStack mt={4}>
@@ -324,15 +374,16 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                                                     </Text>
                                                     <FaCopy size="20px" color="orange" cursor="pointer" onClick={() => handleCopyAddress(selectedDispenser.source)} />
                                                 </HStack>
-                                                <Box border={'1px solid orange'} borderRadius="10px" p="10px">
+                                                <Box border={"1px solid orange"} borderRadius="10px" p="10px">
                                                     <QRCode value={selectedDispenser.source} size={200} bgColor="orange" fgColor="black" />
                                                 </Box>
                                                 <HStack>
-
-                                                    <Badge bg={"orange.200"} color={"black"} className='btc-price'><Text fontSize={"18px"}> {selectedDispenser.btcrate} BTC</Text></Badge> <Text>-</Text>
-                                                    <Text>  {selectedDispenser.give_remaining}/{selectedDispenser.escrow_quantity} left</Text>
+                                                    <Badge bg={"orange.200"} color={"black"} className="btc-price">
+                                                        <Text fontSize={"18px"}> {selectedDispenser.btcrate} BTC</Text>
+                                                    </Badge>{" "}
+                                                    <Text>-</Text>
+                                                    <Text> {selectedDispenser.give_remaining}/{selectedDispenser.escrow_quantity} left</Text>
                                                 </HStack>
-
                                             </VStack>
                                         )}
                                     </>
@@ -340,14 +391,7 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
                             </VStack>
                         </CardBody>
                         <CardFooter>
-                            <Button
-                                leftIcon={<FaArrowDown />}
-                                colorScheme="yellow"
-                                size="sm"
-                                variant={'outline'}
-                                w={'auto'}
-                                onClick={() => setIsFlipped(false)}
-                            >
+                            <Button leftIcon={<FaArrowDown />} colorScheme="yellow" size="sm" variant={"outline"} w={"auto"} onClick={() => setIsFlipped(false)}>
                                 Back
                             </Button>
                         </CardFooter>
@@ -356,6 +400,6 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             </Box>
         </Flex>
     );
-}
+};
 
 export default StampCard;
