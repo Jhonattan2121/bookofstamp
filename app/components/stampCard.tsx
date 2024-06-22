@@ -182,18 +182,19 @@ const StampCard: React.FC<StampCardProps> = ({ stampId }) => {
             return (
                 <Box
                     width="240px"
-                    height="240px"
+                    height="300px"
                     borderRadius="10px"
                     borderWidth="2px"
                     borderColor="yellow"
                     style={{
-                        overflow: "hidden",
+                        overflow: "auto",
                     }}
                 >
                     <iframe
                         srcDoc={combinedContent}
                         width="100%"
                         height="100%"
+                        sandbox="allow-scripts allow-same-origin  allow-forms allow-popups  allow-orientation-lock allow-pointer-lock allow-presentation allow-top-navigation allow-top-navigation-by-user-activation"
                         style={{
                             border: "none",
                             borderRadius: "10px",

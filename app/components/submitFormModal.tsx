@@ -31,6 +31,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
     });
 
     const [stampImage, setStampImage] = useState<string>("");
+    const [isFetchingImage, setIsFetchingImage] = useState<boolean>(false);
     const toast = useToast();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
@@ -41,8 +42,16 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
     };
 
     const getStampImage = async (stampId: string) => {
-        const stampData = await getStampData(stampId);
-        setStampImage(stampData.data.stamp.stamp_url);
+        try {
+            setIsFetchingImage(true);
+            const stampData = await getStampData(stampId);
+            setStampImage(stampData.data.stamp.stamp_url);
+            console.log(stampData);
+        } catch (error) {
+            console.error('Error fetching stamp image:', error);
+        } finally {
+            setIsFetchingImage(false);
+        }
     };
 
     useEffect(() => {
@@ -57,6 +66,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
     };
 
     const handleSubmit = async () => {
+        console.log(stampImage);
         if (!formData.artist || !formData.contact || !formData.cpid) {
             toast({
                 render: () => <PepeToast title="Error" description="All fields must be filled." />,
@@ -77,23 +87,34 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
             return;
         }
 
-        const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
-
-        const webhookBody = {
-            embeds: [{
-                title: '🐸  New Stamp Art Submission',
-                fields: [
-                    { name: 'Artist Name', value: formData.artist },
-                    { name: 'Telegram/Twitter/Discord Username', value: formData.contact },
-                    { name: 'Asset Name', value: formData.cpid }
-                ],
-                image: {
-                    url: stampImage
-                }
-            }]
-        };
-
         try {
+            // Ensure the stamp image is fetched before submitting
+            if (!stampImage) {
+                await getStampImage(formData.cpid);
+            }
+
+            const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
+
+            const webhookBody = {
+                embeds: [{
+                    title: '🐸  New Stamp Art Submission',
+                    fields: [
+                        { name: 'Artist Name', value: formData.artist },
+                        { name: 'Telegram/Twitter/Discord Username', value: formData.contact },
+                        { name: 'Asset Name', value: formData.cpid }
+                    ],
+                    image: {
+                        url: stampImage
+                    },
+                    thumbnail: {
+                        url: stampImage
+                    },
+                    footer: {
+                        text: 'Submitted via Pepe Stamp Submission Form'
+                    }
+                }]
+            };
+
             if (!webhookUrl) {
                 throw new Error('Webhook URL is undefined.');
             }
@@ -216,6 +237,7 @@ const SubmitFormModal: React.FC<SubmitFormModalProps> = ({ isOpen, onClose }) =>
                             maxW="200px"
                             _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                             onClick={handleSubmit}
+                            isLoading={isFetchingImage} // Disable the button while fetching image
                         >
                             Submit Stamp
                         </Button>
